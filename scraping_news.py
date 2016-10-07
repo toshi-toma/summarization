@@ -25,7 +25,11 @@ print urllist
 for link in urllist:
     news_html = requests.get(link)
     news_soup = BeautifulSoup(news_html.text,"lxml")
-    
+    articlebody = news_soup.find(class_='articleBody')
+    # 各ニュースの本文取得
+    spans = articlebody.find_all('span', {'itemprop': 'articleBody'})
+    for span in spans:
+        print span.text
 
 
 
