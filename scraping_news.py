@@ -48,12 +48,6 @@ for url in url_list:
         article_list.append("外部サイトにニュースが存在します。")
 
 
-# for i in article_list:
-#     print i
-# for i in date_list:
-#     print i
-# for i in id_list:
-#     print i
 file_name = "article_news.csv"
 csv_file = open(file_name,"a")
 try:
