@@ -5,15 +5,11 @@
 livedoor newsからニュースをスクレイピングして、そのニュースに対して自動要約を行います。
 
 ## ファイル構成
-* scraping_news.py
-livedoor newsからニュースをスクレイピングするファイル
 
-* article_news.csv	
-取得したニュースが格納されているファイル
+* scraping_news.py  livedoor newsからニュースをスクレイピングするファイル
 
-* uniq_csv.py
-重複したニュースを削除するファイル
+* article_news.csv  取得したニュースが格納されているファイル
 
-* sample.py
-コードを試したい時に使うファイル
+* uniq_csv.py   重複したニュースを削除するファイル
 
+* sample.py   コードを試したい時に使うファイル
