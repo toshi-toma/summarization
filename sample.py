@@ -1,7 +1,2 @@
-str = "jfkalfjklakljlkfjal,aofjoapjfopa"
-
-if "," in str:
-    print "ok"
-    str = "\"" + str + "\""
-
-print str
+# coding: UTF-8
+# 試験用のpythonファイルです
