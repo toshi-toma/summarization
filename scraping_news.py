@@ -42,6 +42,7 @@ for time in times:
 for url in main_url_list:
     news_html = requests.get(url)
     news_soup = BeautifulSoup(news_html.text,"lxml")
+    [s.extract() for s in news_soup('script')]
     articlebody = news_soup.find(class_='articleBody')
     # 各ニュースの本文取得
     try:
