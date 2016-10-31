@@ -10,6 +10,6 @@ try:
     writer = unicodecsv.writer(csv_file)
     for i in range(len(news)):
         news_row = news[i].split(",")
-        writer.writerow((news_row[0], news_row[1], news_row[2]))
+        writer.writerow((news_row[0], news_row[1], news_row[2], news_row[3]))
 finally:
     csv_file.close()
