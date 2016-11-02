@@ -23,6 +23,7 @@ def get_news_ids(url,fetched_ids):
     article_links = []
     date_list = []
     id_list = []
+    title_list = []
     #livedoorニュースのカテゴリ「主要」ページのHTML取得
     try:
         response = requests.get(url)
@@ -45,12 +46,17 @@ def get_news_ids(url,fetched_ids):
         article_links.append(article_link)
     summary_list = get_summarys(summary_urls)
     article_list = get_news(article_links)
+    titles = soup.findAll('h3', {'class': 'articleListTtl'})
+    # ニュースのタイトル取得及び格納
+    for title in titles:
+        title_list.append(title.text.strip())
     #ニュースの投稿日時取得及び格納
     times = soup.findAll('time', {'class': 'articleListDate'})
     for time in times:
         date_list.append(time.text.strip())
     all_list.append(id_list)
     all_list.append(date_list)
+    all_list.append(title_list)
     all_list.append(article_list)
     all_list.append(summary_list)
     return all_list
@@ -99,7 +105,7 @@ def get_summarys(urls):
             summary_list.append("要約が存在しません。")
     return summary_list
 
-def write_csv(id_list,date_list,article_list,summary_list):
+def write_csv(id_list,date_list,title_list,article_list,summary_list):
     #CSVファイルにニュースID、日時、本文格納
     csv_file = open(FILE_NAME,"a")
     try:
@@ -110,7 +116,7 @@ def write_csv(id_list,date_list,article_list,summary_list):
                 article_list[i] = "\"" + article_list[i] + "\""
             if "," in summary_list[i]:
                 summary_list[i] = "\"" + summary_list[i] + "\""
-            writer.writerow((id, date_list[i], article_list[i], summary_list[i]))
+            writer.writerow((id, date_list[i], title_list[i], article_list[i], summary_list[i]))
     finally:
         csv_file.close()
 
@@ -119,6 +125,7 @@ def main_loop():
     list = get_news_ids(URL,ids)
     id_list = []
     date_list = []
+    title_list = []
     article_list = []
     summary_list = []
     for i in list[0]:
@@ -126,10 +133,12 @@ def main_loop():
     for i in list[1]:
         date_list.append(i)
     for i in list[2]:
-        article_list.append(i)
+        title_list.append(i)
     for i in list[3]:
+        article_list.append(i)
+    for i in list[4]:
         summary_list.append(i)
-    write_csv(id_list,date_list,article_list,summary_list)
+    write_csv(id_list,date_list,title_list,article_list,summary_list)
 
 if __name__ == '__main__':
     main_loop()
