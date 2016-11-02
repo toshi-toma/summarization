@@ -1,22 +1,26 @@
 # coding: UTF-8
 import logging
+import time
 import requests
 import unicodecsv
 from bs4 import BeautifulSoup
 
+#ニュースデータ格納用CSVファイル
 FILE_NAME = 'article_news.csv'
+#livedoor newsのカテゴリ「主要」ページ
 URL = 'http://news.livedoor.com/topics/category/main/'
 
-#取得済みのニュースidのセットを取得
+#取得済みのニュースidを取得
 def get_fetched_ids(filename):
     csv_reader = unicodecsv.reader(open(filename))
     ids = []
     for i, row in enumerate(csv_reader):
-        if i == 0: continue  # header line
+        # header
+        if i == 0: continue
         ids.append(row[0])
     return set(ids)
 
-#ニュースのurlをlivedoornewsから取得。id,dateの格納も行う
+#ニュースのデータを取得。id,date,title,article,summaryが格納されたリストを返す
 def get_news_ids(url,fetched_ids):
     all_list = []
     summary_urls = []
@@ -24,6 +28,7 @@ def get_news_ids(url,fetched_ids):
     date_list = []
     id_list = []
     title_list = []
+    skip_number = []
     #livedoorニュースのカテゴリ「主要」ページのHTML取得
     try:
         response = requests.get(url)
@@ -35,24 +40,30 @@ def get_news_ids(url,fetched_ids):
     except requests.ConnectTimeout:
         logging.info("ConnectTimeout")
     #ニュースのURL取得及び格納
-    for link in mainbody.findAll('a'):
-        summary_urls.append(link.get('href'))
-        #url内の文字列topicsをarticleに変更=>ニュース本文を取得
+    for i, link in enumerate(mainbody.findAll('a')):
+        #要約リンクurl内の文字列topicsをarticleに変更
         article_link = link.get('href').replace('topics', 'article')
-        #urlを'/'で分割
+        #urlを'/'で分割,分割結果の5番目がidにあたる
         url_split = article_link.split("/")
-        #分割結果の5番目がidにあたる
-        id_list.append(url_split[5].strip())
-        article_links.append(article_link)
+        if url_split[5].strip() not in fetched_ids:
+            id_list.append(url_split[5].strip())
+            article_links.append(article_link)
+            # 要約リンクurlを取得
+            summary_urls.append(link.get('href'))
+        else: skip_number.append(i)
     summary_list = get_summarys(summary_urls)
     article_list = get_news(article_links)
-    titles = soup.findAll('h3', {'class': 'articleListTtl'})
     # ニュースのタイトル取得及び格納
-    for title in titles:
+    titles = soup.findAll('h3', {'class': 'articleListTtl'})
+    for i, title in enumerate(titles):
+        if i in skip_number:
+            continue
         title_list.append(title.text.strip())
     #ニュースの投稿日時取得及び格納
     times = soup.findAll('time', {'class': 'articleListDate'})
-    for time in times:
+    for i, time in enumerate(times):
+        if i in skip_number:
+            continue
         date_list.append(time.text.strip())
     all_list.append(id_list)
     all_list.append(date_list)
@@ -61,9 +72,10 @@ def get_news_ids(url,fetched_ids):
     all_list.append(summary_list)
     return all_list
 
+#ニュースの本文を取得
 def get_news(urls):
     article_list = []
-    #ニュース本文HTMLを取得
+    #本文のHTMLを取得
     for url in urls:
         try:
             news_html = requests.get(url)
@@ -74,18 +86,20 @@ def get_news(urls):
             logging.info("ConnectionError")
         except requests.ConnectTimeout:
             logging.info("ConnectTimeout")
-        # 各ニュースの本文取得
+        #本文取得
         try:
             spans = articlebody.find_all('span', {'itemprop': 'articleBody'})
-            for span in spans:
-                article_list.append(span.text.strip())
+            for span in spans: article_list.append(span.text.strip())
         except AttributeError:
                 article_list.append("外部サイトにニュースが存在します。")
+
+        time.sleep(3)
     return article_list
 
+#ニュースの要約を取得
 def get_summarys(urls):
     summary_list = []
-    #ニュース要約HTMLを取得
+    #要約のHTMLを取得
     for url in urls:
         try:
             summary_html = requests.get(url)
@@ -98,11 +112,12 @@ def get_summarys(urls):
         try:
             lis = ul.find_all('li')
             summary_text = ""
-            for li in lis :
-                summary_text += li.text.strip() + "."
+            for li in lis : summary_text += li.text.strip() + "."
             summary_list.append(summary_text)
         except AttributeError:
             summary_list.append("要約が存在しません。")
+
+        time.sleep(3)
     return summary_list
 
 def write_csv(id_list,date_list,title_list,article_list,summary_list):
@@ -121,24 +136,16 @@ def write_csv(id_list,date_list,title_list,article_list,summary_list):
         csv_file.close()
 
 def main_loop():
+    # while True:
     ids = get_fetched_ids(FILE_NAME)
-    list = get_news_ids(URL,ids)
-    id_list = []
-    date_list = []
-    title_list = []
-    article_list = []
-    summary_list = []
-    for i in list[0]:
-        id_list.append(i)
-    for i in list[1]:
-        date_list.append(i)
-    for i in list[2]:
-        title_list.append(i)
-    for i in list[3]:
-        article_list.append(i)
-    for i in list[4]:
-        summary_list.append(i)
-    write_csv(id_list,date_list,title_list,article_list,summary_list)
+    list = get_news_ids(URL, ids)
+    id_list = [i for i in list[0]]
+    date_list = [i for i in list[1]]
+    title_list = [i for i in list[2]]
+    article_list = [i for i in list[3]]
+    summary_list = [i for i in list[4]]
+    write_csv(id_list, date_list, title_list, article_list, summary_list)
+    # time.sleep(3600)
 
 if __name__ == '__main__':
     main_loop()
