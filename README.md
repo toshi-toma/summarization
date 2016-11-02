@@ -6,10 +6,8 @@ livedoor newsからニュースをスクレイピングして、そのニュー�
 
 ## ファイル構成
 
-* scraping_news.py  livedoor newsからニュースをスクレイピングするファイル
+* scraping_news.py  livedoor newsの主要ニュースをスクレイピングするファイル
 
 * article_news.csv  取得したニュースが格納されているファイル
-
-* uniq_csv.py   重複したニュースを削除するファイル
 
 * sample.py   コードを試したい時に使うファイル
