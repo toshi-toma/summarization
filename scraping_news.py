@@ -28,6 +28,7 @@ def get_news_ids(url,fetched_ids):
     date_list = []
     id_list = []
     title_list = []
+    skip_number = []
     #livedoorニュースのカテゴリ「主要」ページのHTML取得
     try:
         response = requests.get(url)
@@ -39,23 +40,31 @@ def get_news_ids(url,fetched_ids):
     except requests.ConnectTimeout:
         logging.info("ConnectTimeout")
     #ニュースのURL取得及び格納
-    for link in mainbody.findAll('a'):
-        #要約リンクurlを取得
-        summary_urls.append(link.get('href'))
+    for i, link in enumerate(mainbody.findAll('a')):
         #要約リンクurl内の文字列topicsをarticleに変更
         article_link = link.get('href').replace('topics', 'article')
         #urlを'/'で分割,分割結果の5番目がidにあたる
         url_split = article_link.split("/")
-        id_list.append(url_split[5].strip())
-        article_links.append(article_link)
+        if url_split[5].strip() not in fetched_ids:
+            id_list.append(url_split[5].strip())
+            article_links.append(article_link)
+            # 要約リンクurlを取得
+            summary_urls.append(link.get('href'))
+        else: skip_number.append(i)
     summary_list = get_summarys(summary_urls)
     article_list = get_news(article_links)
     # ニュースのタイトル取得及び格納
     titles = soup.findAll('h3', {'class': 'articleListTtl'})
-    for title in titles: title_list.append(title.text.strip())
+    for i, title in enumerate(titles):
+        if i in skip_number:
+            continue
+        title_list.append(title.text.strip())
     #ニュースの投稿日時取得及び格納
     times = soup.findAll('time', {'class': 'articleListDate'})
-    for time in times: date_list.append(time.text.strip())
+    for i, time in enumerate(times):
+        if i in skip_number:
+            continue
+        date_list.append(time.text.strip())
     all_list.append(id_list)
     all_list.append(date_list)
     all_list.append(title_list)
@@ -83,6 +92,8 @@ def get_news(urls):
             for span in spans: article_list.append(span.text.strip())
         except AttributeError:
                 article_list.append("外部サイトにニュースが存在します。")
+
+        time.sleep(3)
     return article_list
 
 #ニュースの要約を取得
@@ -105,6 +116,8 @@ def get_summarys(urls):
             summary_list.append(summary_text)
         except AttributeError:
             summary_list.append("要約が存在しません。")
+
+        time.sleep(3)
     return summary_list
 
 def write_csv(id_list,date_list,title_list,article_list,summary_list):
