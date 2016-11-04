@@ -136,16 +136,16 @@ def write_csv(id_list,date_list,title_list,article_list,summary_list):
         csv_file.close()
 
 def main_loop():
-    # while True:
-    ids = get_fetched_ids(FILE_NAME)
-    list = get_news_ids(URL, ids)
-    id_list = [i for i in list[0]]
-    date_list = [i for i in list[1]]
-    title_list = [i for i in list[2]]
-    article_list = [i for i in list[3]]
-    summary_list = [i for i in list[4]]
-    write_csv(id_list, date_list, title_list, article_list, summary_list)
-    # time.sleep(3600)
+    while True:
+        ids = get_fetched_ids(FILE_NAME)
+        list = get_news_ids(URL, ids)
+        id_list = [i for i in list[0]]
+        date_list = [i for i in list[1]]
+        title_list = [i for i in list[2]]
+        article_list = [i for i in list[3]]
+        summary_list = [i for i in list[4]]
+        write_csv(id_list, date_list, title_list, article_list, summary_list)
+        time.sleep(3600)
 
 if __name__ == '__main__':
     main_loop()
