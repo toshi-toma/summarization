@@ -1,2 +1,2 @@
-#!/bin/sh
-echo "Hello, World!"
+#!/usr/bin/env bash
+echo "（引数）: $1"
