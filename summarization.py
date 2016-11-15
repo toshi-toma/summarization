@@ -43,7 +43,7 @@ def summarization():
     sys.setdefaultencoding('utf-8')
     news = edit_news(read_csv(1))
     for i in news:
-        jumanpp = commands.getoutput("echo" + i + "。" + " | ~/juman/bin/jumanpp")
+        jumanpp = commands.getoutput("echo " + i + "。" + " | ~/juman/bin/jumanpp")
         print jumanpp
 if __name__ == '__main__':
     summarization()
