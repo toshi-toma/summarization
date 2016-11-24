@@ -45,8 +45,8 @@ def get_noun(text):
     for i in line:
         noun = i.split(" ")
         if not noun[0] == "EOS":
-	    if noun[3] == "名詞":
-            	items.append(noun[0])
+            if noun[3] == "名詞":
+                items.append(noun[0])
     return items
 
 #総出現数の高い順にソートした文章３つの番号を返す(名詞の出現頻度で要約選択)
@@ -75,14 +75,16 @@ def noun_score(sentence_words):
                 sum += score[noun]
         sentence_score[count] = sum
         count = count + 1
-
-    #sentence_score = sorted(sentence_score.items(), key=lambda x: x[1]).reverse()
-    print sentence_score
     #要約とする文章３つを選択
     for k, v in sorted(sentence_score.items(), key=lambda x:x[1], reverse=True):
         if  summary_count > 0:
             summary_no.append(k)
             summary_count = summary_count - 1
+    return summary_no
+
+def tfidf_score(sentence_words):
+    # 要約の文章番号
+    summary_no = []
     return summary_no
 
 def summarization():
@@ -95,11 +97,10 @@ def summarization():
     sentence_words = []
     #jumanで形態素解析
     for sentence in news:
-	if not sentence == "":
-        	jumanpp = commands.getoutput("echo " + sentence + "。" + " | ~/juman/bin/jumanpp")
-		print jumanpp
-		#名詞取得
-        	sentence_words.append(get_noun(jumanpp))
+        if not sentence == "":
+            jumanpp = commands.getoutput("echo " + sentence + "。" + " | ~/juman/bin/jumanpp")
+            #名詞取得
+            sentence_words.append(get_noun(jumanpp))
     #要約選択
     summary = noun_score(sentence_words)
     #要約３文を表示
