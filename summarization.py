@@ -99,6 +99,8 @@ def lead_score(sentence_words):
     # num:文書の総数
     # df(i):単語iが出現する文章の数
 # TF-IDF(i,j) = TF(i,j) * IDF(i,j)
+
+#文章における各名詞のtf値のリストを返す
 def tf(sentence):
     # 各名詞のtf値
     noun_tf = {}
@@ -112,6 +114,7 @@ def tf(sentence):
     for noun in nouns:
         noun_tf[noun] = sentence.count(noun) / total
     return noun_tf
+#全文章における名詞のidf値のリストを返す
 def idf(sentence_words):
     #各名詞のidf値
     noun_idf = {}
@@ -131,6 +134,7 @@ def idf(sentence_words):
                 df = df + 1
         noun_idf[noun] = log(float(num)/df)
     return noun_idf
+#TF-IDF値によって重要文選択
 def tfidf_score(sentence_words):
     #要約の文章番号
     summary_no = []
