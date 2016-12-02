@@ -112,7 +112,7 @@ def tf(sentence):
     for noun in sentence:
         nouns.add(noun)
     for noun in nouns:
-        noun_tf[noun] = sentence.count(noun) / total
+        noun_tf[noun] = float(sentence.count(noun)) / total
     return noun_tf
 #全文章における名詞のidf値のリストを返す
 def idf(sentence_words):
@@ -132,7 +132,7 @@ def idf(sentence_words):
         for sentence in sentence_words:
             if noun in sentence:
                 df = df + 1
-        noun_idf[noun] = log(float(num)/df)
+        noun_idf[noun] = log(float(num)/float(df))
     return noun_idf
 #TF-IDF値によって重要文選択
 def tfidf_score(sentence_words):
@@ -148,12 +148,13 @@ def tfidf_score(sentence_words):
     noun_idf = idf(sentence_words)
     #各文章のTF-IDF値計算
     for sentence in sentence_words:
-        tf = {}
+        noun_tf = {}
         tf_idf = 0
-        tf = tf(sentence)
+        noun_tf = tf(sentence)
         for noun in sentence:
-            tf_idf = tf_idf + noun_idf[noun] * tf[noun]
+            tf_idf = tf_idf + noun_idf[noun] * noun_tf[noun]
         sentence_score[count] = tf_idf
+        print str(sentence_score[count])
         count = count + 1
     #要約とする文章３つを選択
     for k, v in sorted(sentence_score.items(), key=lambda x:x[1], reverse=True):
@@ -177,7 +178,7 @@ def summarization():
             #名詞取得
             sentence_words.append(get_noun(jumanpp))
     #要約選択
-    summary = noun_score(sentence_words)
+    summary = tfidf_score(sentence_words)
     #要約３文を表示
     for i, sentence in enumerate(news):
         if i in summary:
