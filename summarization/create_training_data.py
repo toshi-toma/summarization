@@ -4,7 +4,7 @@ import unicodecsv
 import random
 
 #ニュースデータ格納用CSVファイル
-FILE_NAME = 'news_data.csv'
+FILE_NAME = 'data/news_data.csv'
 
 #CSVファイルのデータ数
 DATA_SUM = 2265
@@ -39,8 +39,7 @@ def create_data():
     else:
         for i in index:
             row_data = read_csv(i)
-            print i
-            print row_data
+            print row_data[0]
 
 if __name__ == '__main__':
     create_data()

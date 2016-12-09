@@ -6,7 +6,7 @@ import unicodecsv
 from bs4 import BeautifulSoup
 
 #ニュースデータ格納用CSVファイル
-FILE_NAME = 'article_news.csv'
+FILE_NAME = 'data/article_news.csv'
 #livedoor newsのカテゴリ「主要」ページ
 URL = 'http://news.livedoor.com/topics/category/main/'
 
