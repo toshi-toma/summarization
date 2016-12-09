@@ -37,8 +37,10 @@ def get_news_ids(url,fetched_ids):
         mainbody = soup.find(class_='mainBody')
     except requests.ConnectionError:
         logging.info("ConnectionError")
+        print "Error"
     except requests.ConnectTimeout:
         logging.info("ConnectTimeout")
+        print "Error"
     #ニュースのURL取得及び格納
     for i, link in enumerate(mainbody.findAll('a')):
         #要約リンクurl内の文字列topicsをarticleに変更
@@ -84,8 +86,10 @@ def get_news(urls):
             articlebody = news_soup.find(class_='articleBody')
         except requests.ConnectionError:
             logging.info("ConnectionError")
+            print "Error"
         except requests.ConnectTimeout:
             logging.info("ConnectTimeout")
+            print "Error"
         #本文取得
         try:
             spans = articlebody.find_all('span', {'itemprop': 'articleBody'})
@@ -107,8 +111,10 @@ def get_summarys(urls):
             ul = summary_soup.find(class_='summaryList')
         except requests.ConnectionError:
             logging.info("ConnectionError")
+            print "Error"
         except requests.ConnectTimeout:
             logging.info("ConnectTimeout")
+            print "Error"
         try:
             lis = ul.find_all('li')
             summary_text = ""
@@ -120,7 +126,7 @@ def get_summarys(urls):
         time.sleep(3)
     return summary_list
 
-def write_csv(id_list,date_list,title_list,article_list,summary_list):
+def write_csv(id_list,date_list,title_list,article_list,summary_list,count):
     #CSVファイルにニュースID、日時、本文格納
     csv_file = open(FILE_NAME,"a")
     try:
@@ -132,20 +138,24 @@ def write_csv(id_list,date_list,title_list,article_list,summary_list):
             if "," in summary_list[i]:
                 summary_list[i] = "\"" + summary_list[i] + "\""
             writer.writerow((id, date_list[i], title_list[i], article_list[i], summary_list[i]))
+        logging.info("Succeed!!")
+        print "Succeed! "  + str(count) + " th"
     finally:
         csv_file.close()
 
 def main_loop():
-    # while True:
-    ids = get_fetched_ids(FILE_NAME)
-    list = get_news_ids(URL, ids)
-    id_list = [i for i in list[0]]
-    date_list = [i for i in list[1]]
-    title_list = [i for i in list[2]]
-    article_list = [i for i in list[3]]
-    summary_list = [i for i in list[4]]
-    write_csv(id_list, date_list, title_list, article_list, summary_list)
-    # time.sleep(3600)
+    count = 1
+    while True:
+        ids = get_fetched_ids(FILE_NAME)
+        list = get_news_ids(URL, ids)
+        id_list = [i for i in list[0]]
+        date_list = [i for i in list[1]]
+        title_list = [i for i in list[2]]
+        article_list = [i for i in list[3]]
+        summary_list = [i for i in list[4]]
+        write_csv(id_list, date_list, title_list, article_list, summary_list,count)
+        count += 1
+        time.sleep(1800)
 
 if __name__ == '__main__':
     main_loop()

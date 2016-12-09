@@ -19,7 +19,7 @@ def read_csv(index):
         if i == 0: continue
         # 指定した行のニュース本文を取得
         if i == index: return row
-        
+
 def select_correct_number():
     pass
 
