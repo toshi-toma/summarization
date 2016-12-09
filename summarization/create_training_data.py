@@ -2,6 +2,8 @@
 import sys
 import unicodecsv
 import random
+import summarization as su
+import commands
 
 #ニュースデータ格納用CSVファイル
 FILE_NAME = 'data/news_data.csv'
@@ -16,12 +18,8 @@ def read_csv(index):
         # header
         if i == 0: continue
         # 指定した行のニュース本文を取得
-        if i == index: return row[0]
-
-#名詞のリストを返す
-def get_noun():
-    pass
-
+        if i == index: return row
+        
 def select_correct_number():
     pass
 
@@ -39,7 +37,24 @@ def create_data():
     else:
         for i in index:
             row_data = read_csv(i)
-            print row_data[0]
+            article = su.edit_news(row_data[3])
+            summary = row_data[4].split(".")
+            article_noun = []
+            summary_noun = []
+            # jumanで形態素解析
+            for sentence in article:
+                if not sentence == "":
+                    jumanpp = commands.getoutput("echo " + sentence + "。" + " | ~/juman/bin/jumanpp")
+                    # 名詞取得
+                    article_noun.append(su.get_noun(jumanpp))
+            for sentence in summary:
+                if not sentence == "":
+                    jumanpp = commands.getoutput("echo " + sentence + "。" + " | ~/juman/bin/jumanpp")
+                    # 名詞取得
+                    summary_noun.append(su.get_noun(jumanpp))
+            print article_noun
+            print summary_noun
+
 
 if __name__ == '__main__':
     create_data()
