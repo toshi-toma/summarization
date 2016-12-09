@@ -6,7 +6,7 @@ from collections import Counter
 from math import log
 
 #ニュースデータ格納用CSVファイル
-FILE_NAME = 'article_news.csv'
+FILE_NAME = 'news_data.csv'
 
 #index行のニュース本文を返す
 def read_csv(index):
