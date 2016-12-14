@@ -52,8 +52,7 @@ def create_data():
                     jumanpp = commands.getoutput("echo " + sentence + "。" + " | ~/juman/bin/jumanpp")
                     # 名詞取得
                     summary_noun.append(su.get_noun(jumanpp))
-            print article_noun
-            print summary_noun
+
 
 
 if __name__ == '__main__':
