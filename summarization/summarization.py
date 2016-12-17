@@ -1,7 +1,7 @@
 # coding: UTF-8
 import sys
 import commands
-import edit_csv.csv_editor as csv_e
+import edit_csv.csv_editor as csv
 import tf_idf
 
 #名詞のリストを返す
@@ -20,7 +20,7 @@ def summarization():
     reload(sys)
     sys.setdefaultencoding('utf-8')
     #ニュース取得
-    news = csv_e.edit_news(csv_e.read_csv(1))
+    news = csv.edit_news(csv.read_csv(1))
     #形態素解析した、名詞リスト
     sentence_words = []
     #jumanで形態素解析
