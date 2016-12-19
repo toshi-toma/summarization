@@ -1,15 +1,16 @@
 # coding: UTF-8
 import sys
 import unicodecsv
+sys.path.append('../')
 import random
-import summarization as su
+import edit_csv.csv_editor as csv
 import commands
+import summarization
 
 #ニュースデータ格納用CSVファイル
 FILE_NAME = 'data/news_data.csv'
-
 #CSVファイルのデータ数
-DATA_SUM = 2265
+DATA_SUM = 2878
 
 #index行のニュース本文を返す
 def read_csv(index):
@@ -37,21 +38,47 @@ def create_data():
     else:
         for i in index:
             row_data = read_csv(i)
-            article = su.edit_news(row_data[3])
+            article = csv.edit_news(row_data[3])
             summary = row_data[4].split(".")
             article_noun = []
             summary_noun = []
+            is_summary = []
             # jumanで形態素解析
             for sentence in article:
                 if not sentence == "":
                     jumanpp = commands.getoutput("echo " + sentence + "。" + " | ~/juman/bin/jumanpp")
                     # 名詞取得
-                    article_noun.append(su.get_noun(jumanpp))
+                    article_noun.append(summarization.get_noun(jumanpp))
             for sentence in summary:
                 if not sentence == "":
                     jumanpp = commands.getoutput("echo " + sentence + "。" + " | ~/juman/bin/jumanpp")
                     # 名詞取得
-                    summary_noun.append(su.get_noun(jumanpp))
-
+                    summary_noun.append(summarization.get_noun(jumanpp))
+            #要約文章の名詞一覧
+            summary_noun_list = set()
+            for noun in summary_noun:
+                for i in noun:
+                    summary_noun_list.add(i)
+            #本文の名詞スコア
+            noun_score = {}
+            for noun in article_noun:
+                for i in noun:
+                    if i in summary_noun_list:
+                        if noun_score.get(i):
+                            noun_score[i] += 1
+                        else:
+                            noun_score[i] = 1
+            # 要約とする文章を選択
+            for number,score in sorted(noun_score.items(), key=lambda x: x[1], reverse=True):
+                print noun_score[number] + ":" + str(score)
+            var = raw_input()
+            #判定する
+            """
+            for i in article:
+                print article
+            for i in is_summary:
+                print i
+            var = raw_input()
+            """
 if __name__ == '__main__':
     create_data()
