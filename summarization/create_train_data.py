@@ -8,7 +8,7 @@ import commands
 import summarization
 
 #ニュースデータ格納用CSVファイル
-FILE_NAME = 'data/news_data.csv'
+FILE_NAME = '../data/news_data.csv'
 #CSVファイルのデータ数
 DATA_SUM = 2878
 
@@ -69,8 +69,8 @@ def create_data():
                         else:
                             noun_score[i] = 1
             # 要約とする文章を選択
-            for number,score in sorted(noun_score.items(), key=lambda x: x[1], reverse=True):
-                print noun_score[number] + ":" + str(score)
+            for word,score in sorted(noun_score.items(), key=lambda x: x[1], reverse=True):
+                print word, score
             var = raw_input()
             #判定する
             """
