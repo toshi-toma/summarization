@@ -53,7 +53,5 @@ def create_data():
                     # 名詞取得
                     summary_noun.append(su.get_noun(jumanpp))
 
-
-
 if __name__ == '__main__':
     create_data()
