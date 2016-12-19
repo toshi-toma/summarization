@@ -2,7 +2,7 @@
 import unicodecsv
 
 #ニュースデータ格納用CSVファイル
-FILE_NAME = 'data/news_data.csv'
+FILE_NAME = '../data/news_data.csv'
 
 #index行のニュース本文を返す
 def read_csv(index):
