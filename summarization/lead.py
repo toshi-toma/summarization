@@ -1,6 +1,7 @@
 # coding: UTF-8
 import sys
 import commands
+sys.path.append('../')
 import edit_csv.csv_editor as csv
 import summarization
 

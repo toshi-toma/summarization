@@ -2,6 +2,7 @@
 from math import log
 import sys
 import commands
+sys.path.append('../')
 import summarization
 import edit_csv.csv_editor as csv
 
