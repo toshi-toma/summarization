@@ -15,7 +15,6 @@ def read_csv(index):
 
 #ニュース本文を区切り文字で分割し、リストで返す
 def edit_news(article_news):
-    print article_news
     #区切り文字として分割された単語のリスト
     split_news = article_news.split('。')
     #「」関係の処理
@@ -32,4 +31,6 @@ def edit_news(article_news):
                     news.append(linked_text + n)
                     linked_text = ""
                 else: linked_text += n + "。"
+    for i in news:
+	print i
     return news
