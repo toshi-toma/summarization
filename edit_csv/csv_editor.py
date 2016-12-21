@@ -32,5 +32,5 @@ def edit_news(article_news):
                     linked_text = ""
                 else: linked_text += n + "。"
     for i in news:
-	print i
+        print i
     return news
