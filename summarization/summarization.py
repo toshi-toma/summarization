@@ -8,7 +8,7 @@ def get_noun(text):
         noun = i.split(" ")
         if not noun[0] == "EOS":
             try:
-                if noun[3] == "名詞":
+                if noun[3] == "名詞" or noun[11] == "\"品詞推定:名詞\"":
                     items.append(noun[0])
             except IndexError:
                 print "IndexError"
