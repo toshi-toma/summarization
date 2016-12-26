@@ -121,7 +121,11 @@ def idf_ave(list,score):
     sum = 0
     for i in list:
         sum += score[i]
-    return sum / len(list)
+    try:
+        return sum / len(list)
+    except ZeroDivisionError:
+        return 0
+
 
 if __name__ == '__main__':
     tfidf_summarization()
