@@ -112,5 +112,16 @@ def tfidf_summarization():
         if i in summary:
             print sentence
 
+"""IDF値の平均を返す
+名詞のlistと名詞のidf値scoreを受け取り、そのリストのidf平均値を返す関数
+引数:list, score
+返り値:sum / len(list)
+"""
+def idf_ave(list,score):
+    sum = 0
+    for i in list:
+        sum += score[i]
+    return sum / len(list)
+
 if __name__ == '__main__':
     tfidf_summarization()
