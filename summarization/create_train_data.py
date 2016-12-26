@@ -151,12 +151,16 @@ def create_data_by_idf(v,i):
                 s1 = set(list)
                 s2 = set(fit_noun)
                 ave = tf_idf.idf_ave(s1 - s2, idf_score)
-                if max < ave:
+		print max,ave
+                if max <= ave:
                     max = ave
                     max_number = i
             if max_number not in is_summary:
                 is_summary.append(max_number)
                 fit_noun.extend(fit_list[max_number])
+		max = 0
+		max_number = 0
+	    print len(is_summary)
     # 判定する
     print "*****要約文と判定された本文*****"
     for i in is_summary:
