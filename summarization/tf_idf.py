@@ -126,6 +126,16 @@ def idf_ave(list,score):
     except ZeroDivisionError:
         return 0
 
+"""IDF値の最大値を返す
+名詞のlistと名詞のidf値scoreを受け取り、そのリストのidf最大値を返す関数
+引数:list, score
+返り値:max(idf_list)
+"""
+def idf_max(list,score):
+    idf_list = []
+    for i in list:
+        idf_list.append(score[i])
+    return max(idf_list)
 
 if __name__ == '__main__':
     tfidf_summarization()
