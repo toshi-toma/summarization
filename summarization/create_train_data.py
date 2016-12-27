@@ -125,9 +125,12 @@ def create_data_by_idf(v,i):
                 if i in summary_noun:
                     list.add(i)
             fit_list.append(list)
+    
+    idf_score = tf_idf.idf(fit_list)
     for list in fit_list:
         for i in list:
             print i
+	print tf_idf.idf_max(list,idf_score)
         print "**************"
     """要約とする文章を選択"""
     # 各本文が要約語を含む回数
@@ -137,7 +140,6 @@ def create_data_by_idf(v,i):
     # 要約文と判定された本文の番号
     is_summary = []
     # 各名詞のidf値スコア
-    idf_score = tf_idf.idf(fit_list)
     for i, fit in enumerate(fit_list):
         fit_score[i] = len(fit)
     max = 0
@@ -155,9 +157,9 @@ def create_data_by_idf(v,i):
                 if max <= max_idf:
                     max = max_idf
                     max_number = i
-                elif max == max_idf:
-                    if len(fit_list[max_number]) < len(s1):
-                        max_number = i
+                elif max == max_idf and len(fit_list[max_number]) < len(s1):
+                    max_number = i
+		print max,max_idf
             if max_number not in is_summary:
                 is_summary.append(max_number)
                 fit_noun.extend(fit_list[max_number])
@@ -167,7 +169,6 @@ def create_data_by_idf(v,i):
     print "*****要約文と判定された本文*****"
     for i in is_summary:
         print article[i]
-    var = raw_input()
 
 if __name__ == '__main__':
     # デフォルトの文字エンコーディング設定
