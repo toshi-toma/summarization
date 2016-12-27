@@ -22,7 +22,6 @@ def get_fetched_ids(filename):
 
 #ニュースのデータを取得。id,date,title,article,summaryが格納されたリストを返す
 def get_news_ids(url,fetched_ids):
-    all_list = []
     summary_urls = []
     article_links = []
     date_list = []
@@ -67,12 +66,7 @@ def get_news_ids(url,fetched_ids):
         if i in skip_number:
             continue
         date_list.append(time.text.strip())
-    all_list.append(id_list)
-    all_list.append(date_list)
-    all_list.append(title_list)
-    all_list.append(article_list)
-    all_list.append(summary_list)
-    return all_list
+    return (id_list, date_list, title_list, article_list, summary_list)
 
 #ニュースの本文を取得
 def get_news(urls):
@@ -147,12 +141,7 @@ def main_loop():
     count = 1
     while True:
         ids = get_fetched_ids(FILE_NAME)
-        list = get_news_ids(URL, ids)
-        id_list = [i for i in list[0]]
-        date_list = [i for i in list[1]]
-        title_list = [i for i in list[2]]
-        article_list = [i for i in list[3]]
-        summary_list = [i for i in list[4]]
+        id_list, date_list, title_list, article_list, summary_list = get_news_ids(URL, ids)
         write_csv(id_list, date_list, title_list, article_list, summary_list,count)
         count += 1
         time.sleep(1800)
