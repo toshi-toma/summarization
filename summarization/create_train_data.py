@@ -130,7 +130,7 @@ def create_data_by_idf(v,i):
     for list in fit_list:
         for i in list:
             print i
-	print tf_idf.idf_max(list,idf_score)
+        print tf_idf.idf_max(list,idf_score)
         print "**************"
     """要約とする文章を選択"""
     # 各本文が要約語を含む回数
@@ -159,7 +159,7 @@ def create_data_by_idf(v,i):
                     max_number = i
                 elif max == max_idf and len(fit_list[max_number]) < len(s1):
                     max_number = i
-		print max,max_idf
+                print max,max_idf
             if max_number not in is_summary:
                 is_summary.append(max_number)
                 fit_noun.extend(fit_list[max_number])

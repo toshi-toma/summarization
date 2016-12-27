@@ -136,8 +136,8 @@ def idf_max(list,score):
     for i in list:
         idf_list.append(score[i])
     if idf_list:
-    	return max(idf_list)
+        return max(idf_list)
     else:
-	return 0
+        return 0
 if __name__ == '__main__':
     tfidf_summarization()
