@@ -154,7 +154,7 @@ def create_data_by_idf(v,i):
                 if i in is_summary: continue
                 s1 = set(list)
                 max_idf = tf_idf.idf_max(s1, idf_score)
-                if max <= max_idf:
+                if max < max_idf:
                     max = max_idf
                     max_number = i
                 elif max == max_idf and len(fit_list[max_number]) < len(s1):
@@ -176,8 +176,9 @@ if __name__ == '__main__':
     sys.setdefaultencoding('utf-8')
     # 乱数生成
     index = random.sample(xrange(DATA_SUM + 1), 100)
-    if 0 in index:
-        print "header番号が存在します。"
-    else:
-        for v, i in enumerate(index):
-            create_data_by_idf(v,i)
+    create_data_by_idf(0, 97)
+    # if 0 in index:
+    #     print "header番号が存在します。"
+    # else:
+    #     for v, i in enumerate(index):
+    #         create_data_by_idf(v,i)
