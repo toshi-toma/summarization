@@ -110,6 +110,9 @@ def create_data_by_idf(v,i):
     # jumanで形態素解析
     for sentence in summary:
         if not sentence == "":
+            sentence = sentence.replace('(', '')
+            sentence = sentence.replace(')', '')
+            sentence = sentence.replace('"', '')
             jumanpp = commands.getoutput("echo " + sentence + "。" + " | ~/juman/bin/jumanpp")
             # 名詞取得
             noun_list = summarization.get_noun(jumanpp)
@@ -117,6 +120,9 @@ def create_data_by_idf(v,i):
                 summary_noun.add(i)
     for sentence in article:
         if not sentence == "":
+            sentence = sentence.replace('(', '')
+            sentence = sentence.replace(')', '')
+            sentence = sentence.replace('"', '')
             jumanpp = commands.getoutput("echo " + sentence + "。" + " | ~/juman/bin/jumanpp")
             # 名詞取得
             article_noun = summarization.get_noun(jumanpp)
@@ -176,7 +182,7 @@ if __name__ == '__main__':
     sys.setdefaultencoding('utf-8')
     # 乱数生成
     index = random.sample(xrange(DATA_SUM + 1), 100)
-    create_data_by_idf(0, 97)
+    create_data_by_idf(0, 1806)
     # if 0 in index:
     #     print "header番号が存在します。"
     # else:
