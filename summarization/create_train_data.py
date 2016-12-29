@@ -175,6 +175,7 @@ def create_data_by_idf(v,i):
     print "*****要約文と判定された本文*****"
     for i in is_summary:
         print article[i]
+    var = raw_input()
 
 if __name__ == '__main__':
     # デフォルトの文字エンコーディング設定
@@ -182,9 +183,8 @@ if __name__ == '__main__':
     sys.setdefaultencoding('utf-8')
     # 乱数生成
     index = random.sample(xrange(DATA_SUM + 1), 100)
-    create_data_by_idf(0, 1806)
-    # if 0 in index:
-    #     print "header番号が存在します。"
-    # else:
-    #     for v, i in enumerate(index):
-    #         create_data_by_idf(v,i)
+    if 0 in index:
+        print "header番号が存在します。"
+    else:
+        for v, i in enumerate(index):
+            create_data_by_idf(v,i)
