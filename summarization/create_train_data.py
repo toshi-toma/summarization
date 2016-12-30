@@ -115,7 +115,7 @@ def create_data_by_idf(v,i):
             sentence = sentence.replace('"', '')
             jumanpp = commands.getoutput("echo " + sentence + "。" + " | ~/juman/bin/jumanpp")
             # 名詞取得
-            noun_list = summarization.get_noun(jumanpp)
+            noun_list = summarization.get_noun_verb_adjective(jumanpp)
             for i in noun_list:
                 summary_noun.add(i)
     for sentence in article:
@@ -125,7 +125,7 @@ def create_data_by_idf(v,i):
             sentence = sentence.replace('"', '')
             jumanpp = commands.getoutput("echo " + sentence + "。" + " | ~/juman/bin/jumanpp")
             # 名詞取得
-            article_noun = summarization.get_noun(jumanpp)
+            article_noun = summarization.get_noun_verb_adjective(jumanpp)
             list = set()
             for i in article_noun:
                 if i in summary_noun:
