@@ -107,12 +107,11 @@ def create_data_by_idf(v,i):
     print "*****要約文*****"
     for s in summary:
         print s
+    bad = ['(',')','"',"!"]
     # jumanで形態素解析
     for sentence in summary:
         if not sentence == "":
-            sentence = sentence.replace('(', '')
-            sentence = sentence.replace(')', '')
-            sentence = sentence.replace('"', '')
+            for i in bad: sentence = sentence.replace(i,'')
             jumanpp = commands.getoutput("echo " + sentence + "。" + " | ~/juman/bin/jumanpp")
             # 名詞取得
             noun_list = summarization.get_noun_verb_adjective(jumanpp)
@@ -120,9 +119,7 @@ def create_data_by_idf(v,i):
                 summary_noun.add(i)
     for sentence in article:
         if not sentence == "":
-            sentence = sentence.replace('(', '')
-            sentence = sentence.replace(')', '')
-            sentence = sentence.replace('"', '')
+            for i in bad: sentence = sentence.replace(i, '')
             jumanpp = commands.getoutput("echo " + sentence + "。" + " | ~/juman/bin/jumanpp")
             # 名詞取得
             article_noun = summarization.get_noun_verb_adjective(jumanpp)
