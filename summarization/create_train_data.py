@@ -156,12 +156,15 @@ def create_data_by_idf(v,i):
             for i, list in enumerate(fit_list):
                 if i in is_summary: continue
                 s1 = set(list)
+                s2 = set(fit_noun)
                 max_idf = tf_idf.idf_max(s1, idf_score)
                 if max < max_idf:
                     max = max_idf
                     max_number = i
-                elif max == max_idf and len(fit_list[max_number]) < len(s1):
-                    max_number = i
+                elif max == max_idf:
+                    s3 = set(fit_list[max_number])
+                    if len(s1 | s3) < len(s1 | s2):
+                        max_number = i
                 print max,max_idf
             if max_number not in is_summary:
                 is_summary.append(max_number)
