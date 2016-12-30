@@ -1,4 +1,6 @@
 # coding: UTF-8
+from collections import Counter
+from collections import defaultdict
 from math import log
 import sys
 import commands
@@ -12,42 +14,30 @@ sentenceを受け取り、その文書の各単語におけるtf値を辞書型�
 返り値:noun_tf
 """
 def tf(sentence):
-    # 各名詞のtf値
-    noun_tf = {}
-    # 名詞一覧
-    nouns = set()
     #文書に含まれている全ての単語
     total = len(sentence)
-    # 名詞一覧セット
-    for noun in sentence:
-        nouns.add(noun)
-    for noun in nouns:
-        noun_tf[noun] = float(sentence.count(noun)) / total
+    # 各名詞のtf値
+    count = Counter(sentence)
+    noun_tf = {noun: float(count[noun]) / total for noun in count}
     return noun_tf
 
+
 """全文章における名詞のidf値のリストを返す関数
-sentence_wordsを受け取り、全文章における各単語のidf値を辞書型で返す
-引数:sentence_words
+sentenceを受け取り、全文章における各単語のidf値を辞書型で返す
+引数:sentence
 返り値:noun_idf
 """
-def idf(sentence_words):
-    #各名詞のidf値
-    noun_idf = {}
-    #名詞一覧
-    nouns = set()
+def idf(sentences):
     #num:文書の総数
-    num = len(sentence_words)
+    total_docs = len(sentences)
     #名詞一覧セット
-    for sentence in sentence_words:
-        for noun in sentence:
-            nouns.add(noun)
+    num_docs = defaultdict(int)
+    for sentence in sentences:
+        for word in set(sentence):
+            num_docs[word] += 1
     # 各名詞のidf値計算
-    for noun in nouns:
-        df = 0
-        for sentence in sentence_words:
-            if noun in sentence:
-                df = df + 1
-        noun_idf[noun] = log(float(num)/float(df))
+    noun_idf = {noun: log(float(total_docs) / float(num_docs[noun]))
+                for noun in num_docs}
     return noun_idf
 
 """TF-IDF値によって重要文を選択する関数
@@ -55,31 +45,28 @@ sentence_wordsを受け取り、全文章におけるtf-idf値の合計値が高
 引数:sentence_words
 返り値:summary_no
 """
-def tfidf_score(sentence_words):
+def tfidf_score(sentences):
     #要約の文章番号
     summary_no = []
     #各文章におけるスコア
     sentence_score = {}
     #要約にする制限数
     summary_count = 3
-    # 文章番号
-    count = 0
     #IDF値計算
-    noun_idf = idf(sentence_words)
+    noun_idf = idf(sentences)
     #各文章のTF-IDF値計算
-    for sentence in sentence_words:
+    for doc_id, sentence in enumerate(sentences):
         tf_idf = 0
         noun_tf = tf(sentence)
-        for noun in sentence:
-            tf_idf = tf_idf + noun_idf[noun] * noun_tf[noun]
-        sentence_score[count] = tf_idf
-        print str(sentence_score[count])
-        count = count + 1
+        # for noun in sentence:  # これだと複数回現れる単語を重複して足し込んでしまう
+        for noun in noun_tf:
+            tf_idf += noun_idf[noun] * noun_tf[noun]
+        sentence_score[doc_id] = tf_idf
+        print str(sentence_score[doc_id])
     #要約とする文章３つを選択
-    for k, v in sorted(sentence_score.items(), key=lambda x:x[1], reverse=True):
-        if  summary_count > 0:
-            summary_no.append(k)
-            summary_count = summary_count - 1
+    for doc_id, _ in sorted(sentence_score.items(),
+                            key=lambda x:x[1], reverse=True)[:summary_count]:
+        summary_no.append(doc_id)
     return summary_no
 
 """TF-IDF値の高い順にソートした文章３つの番号を返す(TF-IDFで要約選択)
