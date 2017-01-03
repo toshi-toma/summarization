@@ -182,7 +182,7 @@ if __name__ == '__main__':
     reload(sys)
     sys.setdefaultencoding('utf-8')
     # 乱数生成
-    index = random.sample(xrange(DATA_SUM + 1), 100)
+    index = random.sample(xrange(DATA_SUM + 1), 30)
     if 0 in index:
         print "header番号が存在します。"
     else:
