@@ -25,75 +25,6 @@ def read_csv(index):
 def write_csv():
     pass
 
-def create_data_by_noun(v,i):
-    print v
-    row_data = read_csv(i)
-    #本文を配列に分割
-    article = csv.edit_news(row_data[3])
-    #要約を配列に分割
-    summary = row_data[4].split(".")
-    summary_noun = set()
-    # 要約に含まれる名詞のみの本文名詞リスト
-    fit_list = []
-    print "*****要約文*****"
-    for s in summary:
-        print s
-    # jumanで形態素解析
-    for sentence in summary:
-        if not sentence == "":
-            jumanpp = commands.getoutput("echo " + sentence + "。" + " | ~/juman/bin/jumanpp")
-            # 名詞取得
-            noun_list = summarization.get_noun(jumanpp)
-            for i in noun_list:
-                summary_noun.add(i)
-    for sentence in article:
-        if not sentence == "":
-            jumanpp = commands.getoutput("echo " + sentence + "。" + " | ~/juman/bin/jumanpp")
-            # 名詞取得
-            article_noun = summarization.get_noun(jumanpp)
-            list = set()
-            for i in article_noun:
-                if i in summary_noun:
-                    list.add(i)
-            fit_list.append(list)
-    for list in fit_list:
-        for i in list:
-            print i
-        print "**************"
-    """要約とする文章を選択"""
-    # 各本文が要約語を含む回数
-    fit_score = {}
-    # 要約語として既に追加した名詞
-    fit_noun = []
-    # 要約文と判定された本文の番号
-    is_summary = []
-    for i,fit in enumerate(fit_list):
-        fit_score[i] = len(fit)
-    max = 0
-    max_number = 0
-    for number,score in sorted(fit_score.items(), key=lambda x: x[1], reverse=True):
-        if len(is_summary) >= 3: break
-        if len(is_summary) == 0:
-            is_summary.append(number)
-            fit_noun.extend(fit_list[number])
-        else:
-            for i,list in enumerate(fit_list):
-                if i in is_summary: continue
-                s1 = set(list)
-                s2 = set(fit_noun)
-                if max < len(s1 | s2):
-                    max = len(s1 | s2)
-                    max_number = i
-            if max_number not in is_summary:
-                is_summary.append(max_number)
-                fit_noun.extend(fit_list[max_number])
-                max = 0
-                max_number = 0
-    #判定する
-    print "*****要約文と判定された本文*****"
-    for i in is_summary:
-        print article[i]
-
 def create_data_by_idf(v,i):
     print v
     row_data = read_csv(i)
@@ -130,11 +61,6 @@ def create_data_by_idf(v,i):
             fit_list.append(list)
     
     idf_score = tf_idf.idf(fit_list)
-    for list in fit_list:
-        for i in list:
-            print i
-        print tf_idf.idf_max(list,idf_score)
-        print "**************"
     """要約とする文章を選択"""
     # 各本文が要約語を含む回数
     fit_score = {}
@@ -165,7 +91,6 @@ def create_data_by_idf(v,i):
                     s3 = set(fit_list[max_number])
                     if len(s2 | s3) < len(s1 | s2):
                         max_number = i
-                print max,max_idf
             if max_number not in is_summary:
                 is_summary.append(max_number)
                 fit_noun.extend(fit_list[max_number])
@@ -175,7 +100,6 @@ def create_data_by_idf(v,i):
     print "*****要約文と判定された本文*****"
     for i in is_summary:
         print article[i]
-    var = raw_input()
 
 if __name__ == '__main__':
     # デフォルトの文字エンコーディング設定
