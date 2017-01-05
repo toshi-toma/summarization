@@ -2,32 +2,20 @@
 import sys
 import unicodecsv
 sys.path.append('../')
-import random
 import edit_csv.csv_editor as csv
 import commands
 import summarization
 import tf_idf
 
 #ニュースデータ格納用CSVファイル
-FILE_NAME = '../data/news_data.csv'
-#CSVファイルのデータ数
-DATA_SUM = 2878
+NEWS_FILE = '../data/news_data.csv'
+#訓練データ用CSVファイル
+TRAIN_FILE = '../data/train_data.csv'
 
-#index行のニュース本文を返す
-def read_csv(index):
-    csv_reader = unicodecsv.reader(open(FILE_NAME))
-    for i, row in enumerate(csv_reader):
-        # header
-        if i == 0: continue
-        # 指定した行のニュース本文を取得
-        if i == index: return row
-
-def write_csv():
+def write_csv(row_data):
     pass
 
-def create_data_by_idf(v,i):
-    print v
-    row_data = read_csv(i)
+def create_data_by_idf(row_data):
     # 本文を配列に分割
     article = csv.edit_news(row_data[3])
     # 要約を配列に分割
@@ -101,14 +89,31 @@ def create_data_by_idf(v,i):
     for i in is_summary:
         print article[i]
 
-if __name__ == '__main__':
+'''
+訓練データの作成
+特徴量
+・最大tf-idf値
+・最小tf-idf値
+・名詞の数
+・動詞の数
+・タイトル語との一致数 / 全単語数
+・文の位置
+・lead法で選択されるか(0 or 1)
+・tf法で選択されるか(0 or 1)
+・tf-idf法で選択されるか(0 or 1)
+'''
+def create_train_data():
     # デフォルトの文字エンコーディング設定
     reload(sys)
     sys.setdefaultencoding('utf-8')
-    # 乱数生成
-    index = random.sample(xrange(DATA_SUM + 1), 30)
-    if 0 in index:
-        print "header番号が存在します。"
-    else:
-        for v, i in enumerate(index):
-            create_data_by_idf(v,i)
+    csv_reader = unicodecsv.reader(open(NEWS_FILE))
+    for i, row_data in enumerate(csv_reader):
+        # header
+        if i == 0: continue
+        article_news = csv.edit_news(row_data[3])
+        for article in article_news:
+            write_csv()
+        create_data_by_idf(row_data)
+
+if __name__ == '__main__':
+    create_train_data()
