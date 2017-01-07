@@ -16,21 +16,21 @@ def read_csv(index):
 #ニュース本文を区切り文字で分割し、リストで返す
 def edit_news(article_news):
     #区切り文字として分割された単語のリスト
-    split_news = article_news.split('。')
+    split_news = article_news.split(u'。')
     #「」関係の処理
     news = []
     linked_text = ""
     for n in split_news:
-        if (n.count('「') + n.count('」')) == 0 and linked_text == "": news.append(n)
+        if (n.count(u'「') + n.count(u'」')) == 0 and linked_text == "": news.append(n)
         else:
             if linked_text == "":
-                if (n.count('「') + n.count('」')) % 2 == 0: news.append(n)
-                else: linked_text += n + "。"
+                if (n.count(u'「') + n.count(u'」')) % 2 == 0: news.append(n)
+                else: linked_text += n + u"。"
             else:
-                if ((linked_text + n).count('「') + (linked_text + n).count('」')) % 2 == 0:
+                if ((linked_text + n).count(u'「') + (linked_text + n).count(u'」')) % 2 == 0:
                     news.append(linked_text + n)
                     linked_text = ""
-                else: linked_text += n + "。"
+                else: linked_text += n + u"。"
     for i in news:
         print i
     return news

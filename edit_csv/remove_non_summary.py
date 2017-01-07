@@ -1,5 +1,6 @@
 # coding: UTF-8
 import unicodecsv
+import edit_csv.csv_editor as csv
 
 """
 article_news.csvから要約と本文が存在しないもの削除して、取り扱い可能なデータをnews_data.csvに出力する
@@ -18,4 +19,6 @@ if __name__ == '__main__':
         if i == 0: continue
         if row[3] == u"外部サイトにニュースが存在します。": continue
         if row[4] == u"要約が存在しません。": continue
+        article = csv.edit_news(row[3])
+        if len(article) <= 3: continue
         writer.writerow((row))
