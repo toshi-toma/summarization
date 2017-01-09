@@ -89,19 +89,6 @@ def create_data_by_idf(row_data):
     for i in is_summary:
         print article[i]
 
-'''
-訓練データの作成
-特徴量
-・最大tf-idf値
-・最小tf-idf値
-・名詞の数
-・動詞の数
-・タイトル語との一致数 / 全単語数
-・文の位置
-・lead法で選択されるか(0 or 1)
-・tf法で選択されるか(0 or 1)
-・tf-idf法で選択されるか(0 or 1)
-'''
 def create_train_data():
     # デフォルトの文字エンコーディング設定
     reload(sys)
