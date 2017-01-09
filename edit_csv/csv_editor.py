@@ -3,6 +3,8 @@ import unicodecsv
 
 #ニュースデータ格納用CSVファイル
 FILE_NAME = '../data/news_data.csv'
+#全ニュースデータ格納用CSVファイル
+FILE_NAME2 = '../data/article_news.csv'
 
 #index行のニュース本文を返す
 def read_csv(index):
@@ -13,8 +15,20 @@ def read_csv(index):
         # 指定した行のニュース本文を取得
         if i == index: return row[3]
 
+def remove_unnecessary_sentence(news):
+    bad = [u"【Specialコンテンツ（PR)】",u"【参考】",u"【翻訳編集】",u"【関連リンク】",u"【関連記事】"]
+    return_news = []
+    for i in news:
+        if bad[0] in i or bad[1] in i or bad[2] in i or bad[3] in i or bad[4] in i:
+            continue
+        return_news.append(i)
+    return return_news
+
 #ニュース本文を区切り文字で分割し、リストで返す
 def edit_news(article_news):
+    #《》を「」に変換
+    article_news = article_news.replace(u'《',u'「')
+    article_news = article_news.replace(u'》',u'」')
     #区切り文字として分割された単語のリスト
     split_news = article_news.split(u'。')
     #「」関係の処理
@@ -31,6 +45,27 @@ def edit_news(article_news):
                     news.append(linked_text + n)
                     linked_text = ""
                 else: linked_text += n + u"。"
+    news = remove_unnecessary_sentence(news)
     for i in news:
         print i
     return news
+
+"""
+article_news.csvから要約と本文が存在しないものなど対象外なニュース記事を削除して、取り扱い可能なデータをnews_data.csvに出力する
+"""
+def remove_not_covered_news():
+    csv_reader = unicodecsv.reader(open(FILE_NAME2))
+    csv_file = open(FILE_NAME, "a")
+    writer = unicodecsv.writer(csv_file)
+    for i, row in enumerate(csv_reader):
+        # header
+        if i == 0: continue
+        if row[3] == u"外部サイトにニュースが存在します。": continue
+        if row[4] == u"要約が存在しません。": continue
+        article = edit_news(row[3])
+        if len(article) <= 3: continue
+        writer.writerow((row))
+
+#要約またはニュース本文が存在しないデータを削除して、news_data.csvに書き込む
+if __name__ == '__main__':
+    remove_not_covered_news()
