@@ -15,8 +15,14 @@ def read_csv(index):
         # 指定した行のニュース本文を取得
         if i == index: return row[3]
 
-def remove_unnecessary_sentence():
-    pass
+def remove_unnecessary_sentence(news):
+    bad = [u"【Specialコンテンツ（PR)】",u"【参考】",u"【翻訳編集】",u"【関連リンク】",u"【関連記事】"]
+    return_news = []
+    for i in news:
+        if bad[0] in i or bad[1] in i or bad[2] in i or bad[3] in i or bad[4] in i:
+            continue
+        return_news.append(i)
+    return return_news
 
 #ニュース本文を区切り文字で分割し、リストで返す
 def edit_news(article_news):
@@ -39,6 +45,7 @@ def edit_news(article_news):
                     news.append(linked_text + n)
                     linked_text = ""
                 else: linked_text += n + u"。"
+    news = remove_unnecessary_sentence(news)
     for i in news:
         print i
     return news
