@@ -3,6 +3,8 @@ import unicodecsv
 
 #ニュースデータ格納用CSVファイル
 FILE_NAME = '../data/news_data.csv'
+#全ニュースデータ格納用CSVファイル
+FILE_NAME2 = '../data/article_news.csv'
 
 #index行のニュース本文を返す
 def read_csv(index):
@@ -34,3 +36,23 @@ def edit_news(article_news):
     for i in news:
         print i
     return news
+
+"""
+article_news.csvから要約と本文が存在しないもの削除して、取り扱い可能なデータをnews_data.csvに出力する
+"""
+def remove_not_covered_news():
+    csv_reader = unicodecsv.reader(open(FILE_NAME2))
+    csv_file = open(FILE_NAME, "a")
+    writer = unicodecsv.writer(csv_file)
+    for i, row in enumerate(csv_reader):
+        # header
+        if i == 0: continue
+        if row[3] == u"外部サイトにニュースが存在します。": continue
+        if row[4] == u"要約が存在しません。": continue
+        article = edit_news(row[3])
+        if len(article) <= 3: continue
+        writer.writerow((row))
+
+#要約またはニュース本文が存在しないデータを削除して、news_data.csvに書き込む
+if __name__ == '__main__':
+    remove_not_covered_news()
