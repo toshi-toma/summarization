@@ -15,8 +15,14 @@ def read_csv(index):
         # 指定した行のニュース本文を取得
         if i == index: return row[3]
 
+def remove_unnecessary_sentence():
+    pass
+
 #ニュース本文を区切り文字で分割し、リストで返す
 def edit_news(article_news):
+    #《》を「」に変換
+    article_news = article_news.replace(u'《',u'「')
+    article_news = article_news.replace(u'》',u'」')
     #区切り文字として分割された単語のリスト
     split_news = article_news.split(u'。')
     #「」関係の処理
@@ -38,7 +44,7 @@ def edit_news(article_news):
     return news
 
 """
-article_news.csvから要約と本文が存在しないもの削除して、取り扱い可能なデータをnews_data.csvに出力する
+article_news.csvから要約と本文が存在しないものなど対象外なニュース記事を削除して、取り扱い可能なデータをnews_data.csvに出力する
 """
 def remove_not_covered_news():
     csv_reader = unicodecsv.reader(open(FILE_NAME2))
