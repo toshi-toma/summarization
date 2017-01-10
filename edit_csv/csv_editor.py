@@ -19,32 +19,80 @@ def remove_unnecessary_sentence(news):
     bad = [u"【Specialコンテンツ（PR)】",u"【参考】",u"【翻訳編集】",u"【関連リンク】",u"【関連記事】"]
     return_news = []
     for i in news:
+        is_digit = False
+        count = 0
+        math_count = 0
+        string = ""
         if bad[0] in i or bad[1] in i or bad[2] in i or bad[3] in i or bad[4] in i:
             continue
+        if u"⇒【写真】はコチラ" in i:
+            for word in i:
+                if word == u"⇒":
+                    break
+                string += word
+            for c, st in enumerate(i):
+                if st.isdigit():
+                    math_count += 1
+                else:
+                    if math_count >= 7:
+                        count = c
+                        break
+                    else:
+                        math_count = 0
+            i = string + u" " + i[count:]
+        elif u"【写真】" in i:
+            if i[0] == u"【":
+                if u"　" in i:
+                    sp = i.split(u"　")[1:]
+                    i = ""
+                    for s in sp: i += u"　" + s
+                elif u" " in i:
+
+                    sp = i.split(u" ")[1:]
+                    i = ""
+                    for s in sp: i += u"　" + s
+            else:
+                i = i.replace(u"【写真】",u"")
         return_news.append(i)
     return return_news
 
+def replace_text(article_news):
+    # 《》を「」に変換
+    article_news = article_news.replace(u'《', u'「')
+    article_news = article_news.replace(u'》', u'」')
+    article_news = article_news.replace(u'<', u'＜')
+    article_news = article_news.replace(u'>', u'＞')
+    article_news = article_news.replace(u'(', u'（')
+    article_news = article_news.replace(u')', u'）')
+    article_news = article_news.replace(u'!', u'！')
+    article_news = article_news.replace(u'"', u'')
+    article_news = article_news.replace(u'&', u'＆')
+    return article_news
+
 #ニュース本文を区切り文字で分割し、リストで返す
 def edit_news(article_news):
-    #《》を「」に変換
-    article_news = article_news.replace(u'《',u'「')
-    article_news = article_news.replace(u'》',u'」')
+    article_news = replace_text(article_news)
     #区切り文字として分割された単語のリスト
     split_news = article_news.split(u'。')
     #「」関係の処理
     news = []
     linked_text = ""
     for n in split_news:
-        if (n.count(u'「') + n.count(u'」')) == 0 and linked_text == "": news.append(n)
+        if (n.count(u'「') + n.count(u'」')) == 0 and linked_text == "":
+            news.append(n)
         else:
             if linked_text == "":
-                if (n.count(u'「') + n.count(u'」')) % 2 == 0: news.append(n)
-                else: linked_text += n + u"。"
+                if (n.count(u'「') + n.count(u'」')) % 2 == 0:
+                    news.append(n)
+                else:
+                    linked_text += n + u"。"
             else:
                 if ((linked_text + n).count(u'「') + (linked_text + n).count(u'」')) % 2 == 0:
                     news.append(linked_text + n)
                     linked_text = ""
-                else: linked_text += n + u"。"
+                else:
+                    linked_text += n + u"。"
+
     news = remove_unnecessary_sentence(news)
     for i in news:
         print i
