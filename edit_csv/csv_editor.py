@@ -49,11 +49,22 @@ def remove_unnecessary_sentence(news):
         return_news.append(i)
     return return_news
 
+def replace_text(article_news):
+    # 《》を「」に変換
+    article_news = article_news.replace(u'《', u'「')
+    article_news = article_news.replace(u'》', u'」')
+    article_news = article_news.replace(u'<', u'＜')
+    article_news = article_news.replace(u'>', u'＞')
+    article_news = article_news.replace(u'(', u'（')
+    article_news = article_news.replace(u')', u'）')
+    article_news = article_news.replace(u'!', u'！')
+    article_news = article_news.replace(u'"', u'')
+    article_news = article_news.replace(u'&', u'＆')
+    return article_news
+
 #ニュース本文を区切り文字で分割し、リストで返す
 def edit_news(article_news):
-    #《》を「」に変換
-    article_news = article_news.replace(u'《',u'「')
-    article_news = article_news.replace(u'》',u'」')
+    article_news = replace_text(article_news)
     #区切り文字として分割された単語のリスト
     split_news = article_news.split(u'。')
     #「」関係の処理
