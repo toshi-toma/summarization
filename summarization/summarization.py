@@ -1,5 +1,17 @@
 # coding: UTF-8
 
+#単語のリストを返す
+def get_words(text):
+    items = []
+    line = text.splitlines()
+    for i in line:
+        noun = i.split(" ")
+        if not noun[0] == "EOS":
+            try:
+                items.append(noun[0])
+            except IndexError:
+                print "IndexError"
+    return items
 #名詞のリストを返す
 def get_noun(text):
     items = []
