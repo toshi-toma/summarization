@@ -52,8 +52,8 @@ def create_train_data():
             else: sentence_words.append(noun_verb_adjective)
             if len(noun) == 0: sentence_words_noun.append([u""])
             else: sentence_words_noun.append(noun)
-            if len(words) == 0: words_list.extend([0])
-            else: words_list.extend(words)
+            if len(words) == 0: words_list.append(0)
+            else: words_list.append(words)
 
         # jumanで形態素解析
         summary_words = []
@@ -107,7 +107,6 @@ def create_train_data():
             label_score = label[p]
             write_csv(row_data[0], tf_idf_score, max_tf_idf_score, min_tf_idf_score, number_score, bracket_score,
                       position_score, title_score, is_lead_score, is_tf_score, is_tf_idf_score, label_score)
-            var = input()
 
 if __name__ == '__main__':
     create_train_data()
