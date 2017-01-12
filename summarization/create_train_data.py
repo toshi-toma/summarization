@@ -6,14 +6,17 @@ import edit_csv.csv_editor as csv
 import feature_value as feature
 import commands
 import summarization
+import tf_idf
+import noun as noun_summary
 
 #ニュースデータ格納用CSVファイル
 NEWS_FILE = '../data/news_data.csv'
 #訓練データ用CSVファイル
 TRAIN_FILE = '../data/train_data.csv'
 
-def write_csv(row_data):
-    pass
+def write_csv(id, tf_idf_score, max_tf_idf_score, min_tf_idf_score, number_score, bracket_score,
+                      position_score, title_score, is_lead_score, is_tf_score, is_tf_idf_score, label_score):
+    print id, tf_idf_score, max_tf_idf_score, min_tf_idf_score, number_score, bracket_score,position_score, title_score, is_lead_score, is_tf_score, is_tf_idf_score, label_score
 
 def create_train_data():
     # デフォルトの文字エンコーディング設定
@@ -31,6 +34,7 @@ def create_train_data():
         summary_news = summary_news.split(".")
         #ニュースタイトル
         title = csv.replace_text(row_data[2])
+
         # jumanで形態素解析
         #名詞・動詞・形容詞
         sentence_words = []
@@ -50,15 +54,16 @@ def create_train_data():
             else: sentence_words_noun.append(noun)
             if len(words) == 0: words_list.extend(0)
             else: words_list.extend(len(words))
+
         # jumanで形態素解析
         summary_words = []
         for sentence in summary_news:
             jumanpp = commands.getoutput("echo " + sentence + "。" + " | ~/juman/bin/jumanpp")
             # 単語取得
-            summary_words.append(summarization.get_noun_verb_adjective(jumanpp))
+            summary_words.extend(summarization.get_noun_verb_adjective(jumanpp))
+
         # jumanで形態素解析
-        title_words = []
-        jumanpp = commands.getoutput("echo " + sentence + "。" + " | ~/juman/bin/jumanpp")
+        jumanpp = commands.getoutput("echo " + title + "。" + " | ~/juman/bin/jumanpp")
         title_words = summarization.get_noun_verb_adjective(jumanpp)
 
         if len(sentence_words) == len(sentence_words_noun) == len(article_news) == len(words_list):
@@ -66,10 +71,24 @@ def create_train_data():
         else:
             print "バグ発見:" + "article_newsの数:" + str(len(article_news)) + ", sentence_wordsの数:" + str(len(sentence_words)) + ", word_listの数:" + str(len(words_list))
             break
-        feature.get_is_summary(row_data)
+        #TF-IDF格納
+        tf_idf_list = tf_idf.get_tf_idf_score(sentence_words_noun)
+        tf_idf_list = feature.scale_tf_idf(tf_idf_list)
         # 文の長さ格納
         number_list = feature.get_word_number(words_list)
+        # 名詞の出現頻度で重要文抽出
+        tf_summary_list = feature.get_is_tf(sentence_words_noun)
+        # TF-IDF法で重要文抽出
+        tf_idf_summary_list = feature.get_is_tf_idf(tf_idf_list)
+        #ラベル格納
+        label = feature.get_is_summary(sentence_words, summary_words)
         for p, article in enumerate(article_news):
+            #tf-idf値(0 to 1)
+            tf_idf_score = feature.get_tf_idf(tf_idf_list[p])
+            #最大tf-idf値(0 to 1)
+            max_tf_idf_score = feature.get_max_tf_idf(tf_idf_list[p])
+            #最小tf-idf値(0 to 1)
+            min_tf_idf_score = feature.get_min_tf_idf(tf_idf_list[p])
             #文の長さ(0 to 1)
             number_score = number_list[p]
             #括弧の有無(0 or 1)
@@ -78,10 +97,17 @@ def create_train_data():
             position_score = feature.get_position_score(p,article_news)
             #タイトル語との一致度合い(0 to 1)
             title_score = feature.get_title_score(title_words,sentence_words[p])
-
-
-            write_csv()
-
+            #lead法で選択されるか(0 or 1)
+            is_lead_score = feature.get_is_lead(p)
+            #tf法で選択されるか(0 or 1)
+            is_tf_score = tf_summary_list[p]
+            #tf - idf法で選択されるか(0 or 1)
+            is_tf_idf_score = tf_idf_summary_list[p]
+            #label=重要文(0 or 1)
+            label_score = label[p]
+            write_csv(row_data[0], tf_idf_score, max_tf_idf_score, min_tf_idf_score, number_score, bracket_score,
+                      position_score, title_score, is_lead_score, is_tf_score, is_tf_idf_score, label_score)
+            var = input()
 
 if __name__ == '__main__':
     create_train_data()

@@ -8,6 +8,34 @@ sys.path.append('../')
 import summarization
 import edit_csv.csv_editor as csv
 
+"""IDF値の平均を返す
+名詞のlistと名詞のidf値scoreを受け取り、そのリストのidf平均値を返す関数
+引数:list, score
+返り値:sum / len(list)
+"""
+def idf_ave(list,score):
+    sum = 0
+    for i in list:
+        sum += score[i]
+    try:
+        return sum / len(list)
+    except ZeroDivisionError:
+        return 0
+
+"""IDF値の最大値を返す
+名詞のlistと名詞のidf値scoreを受け取り、そのリストのidf最大値を返す関数
+引数:list, score
+返り値:max(idf_list)
+"""
+def idf_max(list,score):
+    idf_list = []
+    for i in list:
+        idf_list.append(score[i])
+    if idf_list:
+        return max(idf_list)
+    else:
+        return 0
+
 """文章における各名詞のtf値のリストを返す関数
 sentenceを受け取り、その文書の各単語におけるtf値を辞書型で返す
 引数:sentence
@@ -99,32 +127,19 @@ def tfidf_summarization():
         if i in summary:
             print sentence
 
-"""IDF値の平均を返す
-名詞のlistと名詞のidf値scoreを受け取り、そのリストのidf平均値を返す関数
-引数:list, score
-返り値:sum / len(list)
-"""
-def idf_ave(list,score):
-    sum = 0
-    for i in list:
-        sum += score[i]
-    try:
-        return sum / len(list)
-    except ZeroDivisionError:
-        return 0
+def get_tf_idf_score(sentence_words_noun):
+    tf_idf_list = []
+    # IDF値計算
+    noun_idf = idf(sentence_words_noun)
+    # 各文章のTF-IDF値計算
+    for doc_id, sentence in enumerate(sentence_words_noun):
+        list = []
+        noun_tf = tf(sentence)
+        for noun in noun_tf:
+            tf_idf = noun_idf[noun] * noun_tf[noun]
+            list.append(tf_idf)
+        tf_idf_list.append(list)
+    return tf_idf_list
 
-"""IDF値の最大値を返す
-名詞のlistと名詞のidf値scoreを受け取り、そのリストのidf最大値を返す関数
-引数:list, score
-返り値:max(idf_list)
-"""
-def idf_max(list,score):
-    idf_list = []
-    for i in list:
-        idf_list.append(score[i])
-    if idf_list:
-        return max(idf_list)
-    else:
-        return 0
 if __name__ == '__main__':
     tfidf_summarization()

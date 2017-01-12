@@ -1,40 +1,60 @@
 # coding: UTF-8
-import sys
-import commands
-import summarization
 import tf_idf
+import noun
 from sklearn.preprocessing import MinMaxScaler
 """
 特徴量
 ・tf-idf値(0 to 1)
 ・最大tf-idf値(0 to 1)
 ・最小tf-idf値(0 to 1)
-    ・文の長さ(0 to 1)
-・重要単語の存在(0 to 1)
-    ・括弧の有無(0 or 1)
-    ・タイトル語との一致度合い(0 to 1)
-    ・文の位置(0 to 1)
+・文の長さ(0 to 1)
+・括弧の有無(0 or 1)
+・タイトル語との一致度合い(0 to 1)
+・文の位置(0 to 1)
 ・lead法で選択されるか(0 or 1)
 ・tf法で選択されるか(0 or 1)
 ・tf-idf法で選択されるか(0 or 1)
 ・label=重要文(0 or 1)
 """
+def scale_tf_idf(tf_idf_list):
+    length = 0
+    length_list = []
+    result_list = []
+    for data in tf_idf_list:
+        length_list.append(len(data))
+        for d in data:
+            length += 1
+    scaler = MinMaxScaler()
+    scaled = []
+    for i in tf_idf_list:
+        for d in i:
+            scaled.append(d)
+    rescaled = scaler.fit_transform(scaled)
+    reshaped_list = []
+    count = 0
+    for n,i in enumerate(rescaled):
+        reshaped_list.append(i)
+        if (n - count + 1) == length_list[len(result_list)]:
+            count += length_list[len(result_list)]
+            result_list.append(reshaped_list)
+            reshaped_list = []
+    return result_list
 
-def get_tf_idf():
-    return 0
+def get_tf_idf(tf_idf_list):
+    tf_idf = 0
+    for i in tf_idf_list:
+        tf_idf += i
+    return float(tf_idf) / len(tf_idf_list)
 
-def get_max_tf_idf():
-    return 0
+def get_max_tf_idf(tf_idf_list):
+    return max(tf_idf_list)
 
-def get_min_tf_idf():
-    return 0
+def get_min_tf_idf(tf_idf_list):
+    return min(tf_idf_list)
 
 def get_word_number(list):
     mms = MinMaxScaler()
     return mms.fit_transform(list)
-
-def get_word_score():
-    return 0
 
 def get_is_bracket(article):
     if u"「" in article: return 1
@@ -50,47 +70,51 @@ def get_title_score(title_words,sentence_words):
 def get_position_score(article_position,article_news):
     return float(article_position) / len(article_news)
 
-def get_is_lead():
-    return 0
+def get_is_lead(p):
+    if p < 3: return 1
+    else: return 0
 
-def get_is_tf():
-    return 0
+def get_is_tf(sentence_words_noun):
+    ave_list = []
+    result = []
+    score = noun.noun_summary(sentence_words_noun)
+    for i in score:
+        sum = 0
+        for d in i:
+            sum += d
+        ave_list.append(float(sum) / len(i))
+    target_list = sorted(ave_list, reverse=True)[:3]
+    for i in ave_list:
+        if i in target_list: result.append(1)
+        else: result.append(0)
+    return result
 
-def get_is_tf_idf():
-    return 0
+def get_is_tf_idf(tf_idf_list):
+    ave_list = []
+    result = []
+    for i in tf_idf_list:
+        sum = 0
+        for d in i:
+            sum += d
+        ave_list.append(float(sum) / len(i))
+    target_list = sorted(ave_list, reverse=True)[:3]
+    for i in ave_list:
+        if i in target_list: result.append(1)
+        else: result.append(0)
+    return result
 
-def get_is_summary(row_data):
-    # 本文を配列に分割
-    article = csv.edit_news(row_data[3])
-    # 要約を配列に分割
-    summary = row_data[4].split(".")
-    summary_noun = set()
+def get_is_summary(sentence_words, summary_words):
+    result = []
+    #要約文の名詞リスト
+    summary_noun = set(summary_words)
     # 要約に含まれる名詞のみの本文名詞リスト
     fit_list = []
-    print "*****要約文*****"
-    for s in summary:
-        print s
-    bad = ['(', ')', '"', "!"]
-    # jumanで形態素解析
-    for sentence in summary:
-        if not sentence == "":
-            for i in bad: sentence = sentence.replace(i, '')
-            jumanpp = commands.getoutput("echo " + sentence + "。" + " | ~/juman/bin/jumanpp")
-            # 名詞取得
-            noun_list = summarization.get_noun_verb_adjective(jumanpp)
-            for i in noun_list:
-                summary_noun.add(i)
-    for sentence in article:
-        if not sentence == "":
-            for i in bad: sentence = sentence.replace(i, '')
-            jumanpp = commands.getoutput("echo " + sentence + "。" + " | ~/juman/bin/jumanpp")
-            # 名詞取得
-            article_noun = summarization.get_noun_verb_adjective(jumanpp)
-            list = set()
-            for i in article_noun:
-                if i in summary_noun:
-                    list.add(i)
-            fit_list.append(list)
+    for sentence in sentence_words:
+        a_list = set()
+        for i in sentence:
+            if i in summary_noun:
+                a_list.add(i)
+        fit_list.append(a_list)
 
     idf_score = tf_idf.idf(fit_list)
     """要約とする文章を選択"""
@@ -129,6 +153,7 @@ def get_is_summary(row_data):
                 max = 0
                 max_number = 0
     # 判定する
-    print "*****要約文と判定された本文*****"
-    for i in is_summary:
-        print article[i]
+    for n,i in enumerate(sentence_words):
+        if n in is_summary: result.append(1)
+        else: result.append(0)
+    return result
