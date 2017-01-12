@@ -64,5 +64,25 @@ def noun_summarization():
     for i, sentence in enumerate(news):
         if i in summary:
             print sentence
+
+def noun_summary(sentence_words_noun):
+    result = []
+    # 各名詞のスコア
+    score = {}
+    # 名詞のスコア判定及び文章のスコア計算
+    for sentence in sentence_words_noun:
+        counter = Counter(sentence)
+        for word, cnt in counter.most_common():
+            if score.get(word):
+                score[word] += cnt
+            else:
+                score[word] = cnt
+    for sentence in sentence_words_noun:
+        score_list = []
+        for noun in sentence:
+            score_list.append(score[noun])
+        result.append(score_list)
+    return result
+
 if __name__ == '__main__':
     noun_summarization()
