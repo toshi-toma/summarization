@@ -53,8 +53,11 @@ def get_min_tf_idf(tf_idf_list):
     return min(tf_idf_list)
 
 def get_word_number(list):
+    n_list = []
+    for i in list:
+        n_list.append(len(i))
     mms = MinMaxScaler()
-    return mms.fit_transform(list)
+    return mms.fit_transform(n_list)
 
 def get_is_bracket(article):
     if u"「" in article: return 1

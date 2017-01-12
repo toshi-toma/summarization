@@ -94,8 +94,6 @@ def edit_news(article_news):
                     linked_text += n + u"。"
 
     news = remove_unnecessary_sentence(news)
-    for i in news:
-        print i
     return news
 
 """

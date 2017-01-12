@@ -52,8 +52,8 @@ def create_train_data():
             else: sentence_words.append(noun_verb_adjective)
             if len(noun) == 0: sentence_words_noun.append([u""])
             else: sentence_words_noun.append(noun)
-            if len(words) == 0: words_list.extend(0)
-            else: words_list.extend(len(words))
+            if len(words) == 0: words_list.extend([0])
+            else: words_list.extend(words)
 
         # jumanで形態素解析
         summary_words = []
