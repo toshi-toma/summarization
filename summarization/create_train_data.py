@@ -7,7 +7,6 @@ import feature_value as feature
 import commands
 import summarization
 import tf_idf
-import noun as noun_summary
 
 #ニュースデータ格納用CSVファイル
 NEWS_FILE = '../data/news_data.csv'

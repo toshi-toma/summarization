@@ -2,6 +2,7 @@
 import tf_idf
 import noun
 from sklearn.preprocessing import MinMaxScaler
+import warnings
 """
 特徴量
 ・tf-idf値(0 to 1)
@@ -29,7 +30,9 @@ def scale_tf_idf(tf_idf_list):
     for i in tf_idf_list:
         for d in i:
             scaled.append(d)
-    rescaled = scaler.fit_transform(scaled)
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        rescaled = scaler.fit_transform(scaled)
     reshaped_list = []
     count = 0
     for n,i in enumerate(rescaled):
@@ -56,8 +59,11 @@ def get_word_number(list):
     n_list = []
     for i in list:
         n_list.append(len(i))
-    mms = MinMaxScaler()
-    return mms.fit_transform(n_list)
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        mms = MinMaxScaler()
+        return mms.fit_transform(n_list)
 
 def get_is_bracket(article):
     if u"「" in article: return 1
