@@ -19,6 +19,8 @@ def remove_unnecessary_sentence(news):
     bad = [u"【Specialコンテンツ（PR)】",u"【参考】",u"【翻訳編集】",u"【関連リンク】",u"【関連記事】"]
     return_news = []
     for i in news:
+	if i == "":
+		continue
         is_digit = False
         count = 0
         math_count = 0

@@ -54,7 +54,6 @@ def create_train_data():
             else: sentence_words_noun.append(noun)
             if len(words) == 0: words_list.append([0])
             else: words_list.append(words)
-
         # jumanで形態素解析
         summary_words = []
         for sentence in summary_news:
@@ -88,6 +87,8 @@ def create_train_data():
         tf_idf_summary_list = feature.get_is_tf_idf(tf_idf_list)
         #ラベル格納
         label = feature.get_is_summary(sentence_words, summary_words)
+	for i in article_news:
+		print i
         for p, article in enumerate(article_news):
             #tf-idf値(0 to 1)
             tf_idf_score = feature.get_tf_idf(tf_idf_list[p])
