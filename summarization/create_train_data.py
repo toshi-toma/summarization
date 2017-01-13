@@ -75,6 +75,8 @@ def create_train_data():
         tf_idf_list = feature.scale_tf_idf(tf_idf_list)
         # 文の長さ格納
         number_list = feature.get_word_number(words_list)
+        # タイトル語との一致度合い格納
+        title_list = feature.get_title_score(title_words,sentence_words)
         # 名詞の出現頻度で重要文抽出
         tf_summary_list = feature.get_is_tf(sentence_words_noun)
         # TF-IDF法で重要文抽出
@@ -95,7 +97,7 @@ def create_train_data():
             #文の位置(0 to 1)
             position_score = feature.get_position_score(p,article_news)
             #タイトル語との一致度合い(0 to 1)
-            title_score = feature.get_title_score(title_words,sentence_words[p])
+            title_score = title_list[p]
             #lead法で選択されるか(0 or 1)
             is_lead_score = feature.get_is_lead(p)
             #tf法で選択されるか(0 or 1)

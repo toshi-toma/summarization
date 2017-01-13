@@ -17,6 +17,8 @@ import warnings
 ・tf-idf法で選択されるか(0 or 1)
 ・label=重要文(0 or 1)
 """
+
+#tf-idf値のスケーリング
 def scale_tf_idf(tf_idf_list):
     length = 0
     length_list = []
@@ -43,18 +45,23 @@ def scale_tf_idf(tf_idf_list):
             reshaped_list = []
     return result_list
 
+#tf-idf値(0 to 1)
 def get_tf_idf(tf_idf_list):
     tf_idf = 0
     for i in tf_idf_list:
         tf_idf += i
     return float(tf_idf) / len(tf_idf_list)
 
+
+#最大tf-idf値(0 to 1)
 def get_max_tf_idf(tf_idf_list):
     return max(tf_idf_list)
 
+#最小tf-idf値(0 to 1)
 def get_min_tf_idf(tf_idf_list):
     return min(tf_idf_list)
 
+#文の長さ(0 to 1)
 def get_word_number(list):
     n_list = []
     for i in list:
@@ -65,24 +72,35 @@ def get_word_number(list):
         mms = MinMaxScaler()
         return mms.fit_transform(n_list)
 
+#括弧の有無(0 or 1)
 def get_is_bracket(article):
     if u"「" in article: return 1
     else: return 0
 
+#タイトル語との一致度合い(0 to 1)
 def get_title_score(title_words,sentence_words):
-    score = 0
-    for i in sentence_words:
-        if i in title_words:
-            score += 1
-    return float(score) / len(sentence_words)
+    score_list = []
+    for sentence in sentence_words:
+        score = 0
+        for i in sentence:
+            if i in title_words:
+                score += 1
+        score_list.append(float(score) / len(sentence_words))
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        mms = MinMaxScaler()
+        return mms.fit_transform(score_list)
 
+#文の位置(0 to 1)
 def get_position_score(article_position,article_news):
     return float(article_position) / len(article_news)
 
+#lead法で選択されるか(0 or 1)
 def get_is_lead(p):
     if p < 3: return 1
     else: return 0
 
+#tf法で選択されるか(0 or 1)
 def get_is_tf(sentence_words_noun):
     ave_list = []
     result = []
@@ -98,6 +116,7 @@ def get_is_tf(sentence_words_noun):
         else: result.append(0)
     return result
 
+#tf-idf法で選択されるか(0 or 1)
 def get_is_tf_idf(tf_idf_list):
     ave_list = []
     result = []
@@ -112,6 +131,7 @@ def get_is_tf_idf(tf_idf_list):
         else: result.append(0)
     return result
 
+#label=重要文(0 or 1)
 def get_is_summary(sentence_words, summary_words):
     result = []
     #要約文の名詞リスト
