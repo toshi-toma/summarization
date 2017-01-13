@@ -10,12 +10,14 @@ import warnings
 ・最小tf-idf値(0 to 1)
 ・文の長さ(0 to 1)
 ・括弧の有無(0 or 1)
-・タイトル語との一致度合い(0 to 1)
 ・文の位置(0 to 1)
+・タイトル語との一致度合い(0 to 1)
 ・lead法で選択されるか(0 or 1)
 ・tf法で選択されるか(0 or 1)
 ・tf-idf法で選択されるか(0 or 1)
 ・label=重要文(0 or 1)
+tf_idf_score, max_tf_idf_score, min_tf_idf_score, number_score, bracket_score,
+                      position_score, title_score, is_lead_score, is_tf_score, is_tf_idf_score, label_score
 """
 
 #tf-idf値のスケーリング
@@ -89,8 +91,14 @@ def get_title_score(title_words,sentence_words):
         return mms.fit_transform(score_list)
 
 #文の位置(0 to 1)
-def get_position_score(article_position,article_news):
-    return float(article_position) / len(article_news)
+def get_position_score(article_news):
+    score = []
+    for n,i in enumerate(article_news):
+        score.append(float(n) / len(article_news))
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        mms = MinMaxScaler()
+        return mms.fit_transform(score)
 
 #lead法で選択されるか(0 or 1)
 def get_is_lead(p):

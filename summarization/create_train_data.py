@@ -85,10 +85,12 @@ def create_train_data():
         tf_summary_list = feature.get_is_tf(sentence_words_noun)
         # TF-IDF法で重要文抽出
         tf_idf_summary_list = feature.get_is_tf_idf(tf_idf_list)
+        #文の位置格納
+        position_list = feature.get_position_score(article_news)
         #ラベル格納
         label = feature.get_is_summary(sentence_words, summary_words)
-	for i in article_news:
-		print i
+        for i in article_news:
+            print i
         for p, article in enumerate(article_news):
             #tf-idf値(0 to 1)
             tf_idf_score = feature.get_tf_idf(tf_idf_list[p])
@@ -101,7 +103,7 @@ def create_train_data():
             #括弧の有無(0 or 1)
             bracket_score = feature.get_is_bracket(article)
             #文の位置(0 to 1)
-            position_score = feature.get_position_score(p,article_news)
+            position_score = position_list[p]
             #タイトル語との一致度合い(0 to 1)
             title_score = title_list[p]
             #lead法で選択されるか(0 or 1)
