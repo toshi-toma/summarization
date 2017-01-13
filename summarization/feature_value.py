@@ -20,19 +20,16 @@ import warnings
 
 #tf-idf値のスケーリング
 def scale_tf_idf(tf_idf_list):
-    length = 0
     length_list = []
     result_list = []
     for data in tf_idf_list:
         length_list.append(len(data))
-        for d in data:
-            length += 1
-    scaler = MinMaxScaler()
     scaled = []
     for i in tf_idf_list:
         for d in i:
             scaled.append(d)
     with warnings.catch_warnings():
+        scaler = MinMaxScaler()
         warnings.simplefilter("ignore")
         rescaled = scaler.fit_transform(scaled)
     reshaped_list = []

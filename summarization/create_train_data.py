@@ -34,6 +34,7 @@ def create_train_data():
         #ニュースタイトル
         title = csv.replace_text(row_data[2])
 
+        """形態素解析&データの用意"""
         # jumanで形態素解析
         #名詞・動詞・形容詞
         sentence_words = []
@@ -51,7 +52,7 @@ def create_train_data():
             else: sentence_words.append(noun_verb_adjective)
             if len(noun) == 0: sentence_words_noun.append([u""])
             else: sentence_words_noun.append(noun)
-            if len(words) == 0: words_list.append(0)
+            if len(words) == 0: words_list.append([0])
             else: words_list.append(words)
 
         # jumanで形態素解析
@@ -68,8 +69,12 @@ def create_train_data():
         if len(sentence_words) == len(sentence_words_noun) == len(article_news) == len(words_list):
             pass
         else:
-            print "バグ発見:" + "article_newsの数:" + str(len(article_news)) + ", sentence_wordsの数:" + str(len(sentence_words)) + ", word_listの数:" + str(len(words_list))
+            print "バグ発見:" + "article_newsの数:" + str(len(article_news)) + ", sentence_wordsの数:" \
+                  + str(len(sentence_words)) + ", word_listの数:" + str(len(words_list)) \
+                  + ",sentence_words_nounの数" + str(len(sentence_words_noun))
             break
+
+        """特長量の計算"""
         #TF-IDF格納
         tf_idf_list = tf_idf.get_tf_idf_score(sentence_words_noun)
         tf_idf_list = feature.scale_tf_idf(tf_idf_list)
