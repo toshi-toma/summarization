@@ -132,13 +132,13 @@ def get_tf_idf_score(sentence_words_noun):
     # IDF値計算
     noun_idf = idf(sentence_words_noun)
     # 各文章のTF-IDF値計算
-    for doc_id, sentence in enumerate(sentence_words_noun):
-        list = []
+    for sentence in sentence_words_noun:
+        score_list = []
         noun_tf = tf(sentence)
         for noun in noun_tf:
             tf_idf = noun_idf[noun] * noun_tf[noun]
-            list.append(tf_idf)
-        tf_idf_list.append(list)
+            score_list.append(tf_idf)
+        tf_idf_list.append(score_list)
     return tf_idf_list
 
 if __name__ == '__main__':
