@@ -13,10 +13,18 @@ NEWS_FILE = '../data/news_data.csv'
 #訓練データ用CSVファイル
 TRAIN_FILE = '../data/train_data.csv'
 
-def write_csv(id, tf_idf_score, max_tf_idf_score, min_tf_idf_score, number_score, bracket_score,
-                      position_score, title_score, is_lead_score, is_tf_score, is_tf_idf_score, label_score):
-    print id, tf_idf_score, max_tf_idf_score, min_tf_idf_score, number_score, bracket_score,position_score, title_score, is_lead_score, is_tf_score, is_tf_idf_score, label_score
 
+def write_csv(id, tf_idf_score, max_tf_idf_score, min_tf_idf_score, number_score, bracket_score,
+              position_score, title_score, is_lead_score, is_tf_score, is_tf_idf_score, label_score):
+    print id, tf_idf_score, max_tf_idf_score, min_tf_idf_score, number_score, bracket_score, position_score, title_score, is_lead_score, is_tf_score, is_tf_idf_score, label_score
+    # CSVファイルにニュースID、日時、本文格納
+    csv_file = open(TRAIN_FILE, "a")
+    try:
+        writer = unicodecsv.writer(csv_file)
+        writer.writerow((id, tf_idf_score, max_tf_idf_score, min_tf_idf_score, number_score, bracket_score,
+                         position_score, title_score, is_lead_score, is_tf_score, is_tf_idf_score, label_score))
+    finally:
+        csv_file.close()
 def create_train_data():
     # デフォルトの文字エンコーディング設定
     reload(sys)
@@ -25,7 +33,6 @@ def create_train_data():
     for n, row_data in enumerate(csv_reader):
         # header
         if n == 0: continue
-        print "news_id:" + row_data[0]
         #ニュース本文
         article_news = csv.edit_news(row_data[3])
         #ニュース要約文
@@ -89,8 +96,6 @@ def create_train_data():
         position_list = feature.get_position_score(article_news)
         #ラベル格納
         label = feature.get_is_summary(sentence_words, summary_words)
-        for i in article_news:
-            print i
         for p, article in enumerate(article_news):
             #tf-idf値(0 to 1)
             tf_idf_score = feature.get_tf_idf(tf_idf_list[p])
