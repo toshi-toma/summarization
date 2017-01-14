@@ -7,7 +7,7 @@ from sklearn.ensemble import RandomForestClassifier
 #訓練データ用CSVファイル
 TRAIN_FILE = '../data/train_data.csv'
 
-def svm():
+def random_forest():
     data = np.loadtxt(TRAIN_FILE, delimiter=",",skiprows=1, usecols=(1,2,3,4,5,6,7,8,9,10,11))
     x = data[:, 0:10]
     y = data[:, 10]
@@ -18,4 +18,4 @@ def svm():
     table = pd.crosstab(y_test, py)
     print table
 if __name__ == '__main__':
-    svm()
+    random_forest()
