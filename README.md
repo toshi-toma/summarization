@@ -29,14 +29,18 @@
 * article_news.csv<br>取得したニュースが格納されているファイル
 * news_data.csv<br>要約可能なニュースが格納されているファイル
 * train_data.csv<br>モデルの作成に使う訓練データ及びテストデータファイル
+
 #### edit_csv
 * csv_editor.py<br>CSVのデータ取得や加工を行うファイル
+
 #### model  
 * logistic_regression.py<br>ロジスティック回帰によるモデル作成・評価を行うファイル
 * random_forest.py<br>ランダムフォレストによるモデル作成・評価を行うファイル
 * svm.py<br>SVMによるモデル作成・評価を行うファイル
+
 #### scraping
 * scraping_news.py<br>livedoor newsの主要ニュースをスクレイピングしてcsvに格納するファイル
+
 #### summarization
 * create_train_data.py<br>訓練データの作成を行うファイル
 * ecaluate_summarization.py<br>リード法、TF法、TF-IDF法の評価を行うファイル
@@ -45,6 +49,7 @@
 * noun.py<br>TF法で重要文抽出を行うファイル
 * summarization.py<br>自動要約で必要な関数群のファイル
 * tf_idf.py<br>TF-IDF法で重要文抽出を行うファイル
+
 #### その他
 * .gitignore<br>git
 * README.md<br>README
