@@ -3,6 +3,7 @@ import numpy as np
 from sklearn.cross_validation import train_test_split
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import classification_report
 
 #訓練データ用CSVファイル
 TRAIN_FILE = '../data/train_data.csv'
@@ -17,5 +18,6 @@ def random_forest():
     py = model.predict(X_test)
     table = pd.crosstab(y_test, py)
     print table
+    print(classification_report(y_test, py))
 if __name__ == '__main__':
     random_forest()
