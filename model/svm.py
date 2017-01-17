@@ -4,7 +4,7 @@ from sklearn.cross_validation import train_test_split
 import pandas as pd
 from sklearn.metrics import accuracy_score
 from sklearn.svm import SVC
-
+from sklearn.metrics import classification_report
 #訓練データ用CSVファイル
 TRAIN_FILE = '../data/train_data.csv'
 
@@ -17,7 +17,8 @@ def svm():
     clf.fit(X_train, y_train)
     predict_result = clf.predict(X_test)
     print pd.crosstab(y_test, predict_result)
-    print accuracy_score(y_test, predict_result)
+    print(classification_report(y_test, predict_result))
+
 
 if __name__ == '__main__':
     svm()

@@ -19,7 +19,7 @@ def remove_unnecessary_sentence(news):
     bad = [u"【Specialコンテンツ（PR)】",u"【参考】",u"【翻訳編集】",u"【関連リンク】",u"【関連記事】"]
     return_news = []
     for i in news:
-        if i == "":
+        if i == "" or i == u" " or i == u"　":
             continue
         count = 0
         math_count = 0
@@ -68,6 +68,12 @@ def replace_text(article_news):
     article_news = article_news.replace(u'!', u'！')
     article_news = article_news.replace(u'"', u'')
     article_news = article_news.replace(u'&', u'＆')
+    article_news = article_news.replace(u'#', u'＃')
+    article_news = article_news.replace(u'`', u'｀')
+    article_news = article_news.replace(u';', u'；')
+    article_news = article_news.replace(u"'", u'’')
+    article_news = article_news.replace(u"|", u'｜')
+    article_news = article_news.replace(u":", u'：')
     return article_news
 
 #ニュース本文を区切り文字で分割し、リストで返す
