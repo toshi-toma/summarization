@@ -74,6 +74,8 @@ def replace_text(article_news):
     article_news = article_news.replace(u"'", u'’')
     article_news = article_news.replace(u"|", u'｜')
     article_news = article_news.replace(u":", u'：')
+    article_news = article_news.replace(u"『", u'「')
+    article_news = article_news.replace(u"』", u'」')
     return article_news
 
 #ニュース本文を区切り文字で分割し、リストで返す
