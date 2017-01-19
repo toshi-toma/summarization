@@ -21,6 +21,8 @@ def remove_unnecessary_sentence(news):
     for i in news:
         if i == "" or i == u" " or i == u"　":
             continue
+        if i[0] == u"　":
+            i = i[1:]
         count = 0
         math_count = 0
         string = ""

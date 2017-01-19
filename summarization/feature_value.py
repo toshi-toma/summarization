@@ -5,6 +5,14 @@ from sklearn.preprocessing import MinMaxScaler
 import warnings
 """
 特徴量
+new
+-----
+・先頭語が助詞(0 or 1)
+・数詞があるか(0 or 1)
+・人名があるか(0 or 1)
+・ドメインの一致(0 or 1)
+・重要単語の存在数(0 to 1)
+-----
 ・tf-idf値(0 to 1)
 ・最大tf-idf値(0 to 1)
 ・最小tf-idf値(0 to 1)
@@ -19,6 +27,26 @@ import warnings
 tf_idf_score, max_tf_idf_score, min_tf_idf_score, number_score, bracket_score,
                       position_score, title_score, is_lead_score, is_tf_score, is_tf_idf_score, label_score
 """
+#先頭語が助詞(0 or 1)
+def get_is_particle():
+    return 0
+
+#数詞があるか(0 or 1)
+def get_is_quantity():
+    return 0
+
+#人名があるか(0 or 1)
+def get_is_person_name():
+    return 0
+
+#ドメインの一致(0 or 1)
+def get_is_domain():
+    return 0
+
+#重要単語の存在数(0 to 1)
+def get_noun_score():
+    return 0
+
 
 #tf-idf値のスケーリング
 def scale_tf_idf(tf_idf_list):
