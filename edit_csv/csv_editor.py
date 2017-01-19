@@ -21,6 +21,8 @@ def remove_unnecessary_sentence(news):
     for i in news:
         if i == "" or i == u" " or i == u"　":
             continue
+        if i[0] == u"　":
+            i = i[1:]
         count = 0
         math_count = 0
         string = ""
@@ -74,6 +76,8 @@ def replace_text(article_news):
     article_news = article_news.replace(u"'", u'’')
     article_news = article_news.replace(u"|", u'｜')
     article_news = article_news.replace(u":", u'：')
+    article_news = article_news.replace(u"『", u'「')
+    article_news = article_news.replace(u"』", u'」')
     return article_news
 
 #ニュース本文を区切り文字で分割し、リストで返す
