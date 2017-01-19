@@ -7,6 +7,8 @@ from sklearn.metrics import classification_report
 
 #訓練データ用CSVファイル
 TRAIN_FILE = '../data/train_data.csv'
+#訓練データ用CSVファイル2
+TRAIN_FILE2 = '../data/train_data_v2.csv'
 
 def random_forest():
     data = np.loadtxt(TRAIN_FILE, delimiter=",",skiprows=1, usecols=(1,2,3,4,5,6,7,8,9,10,11))
