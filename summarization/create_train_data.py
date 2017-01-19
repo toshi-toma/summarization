@@ -11,18 +11,18 @@ import tf_idf
 #ニュースデータ格納用CSVファイル
 NEWS_FILE = '../data/news_data.csv'
 #訓練データ用CSVファイル
-TRAIN_FILE = '../data/train_data.csv'
+TRAIN_FILE = '../data/train_data_v2.csv'
 def write_csv(id, particle_score, quantity_score, person_name_score, domain_score,noun_score, tf_idf_score,
               max_tf_idf_score, min_tf_idf_score, number_score, bracket_score,
                       position_score, title_score, is_lead_score, is_tf_score, is_tf_idf_score, label_score):
     print id, particle_score, quantity_score, person_name_score, domain_score,noun_score, tf_idf_score, max_tf_idf_score, min_tf_idf_score, number_score, bracket_score, position_score, title_score, is_lead_score, is_tf_score, is_tf_idf_score, label_score
     # CSVファイルにニュースID、日時、本文格納
-    csv_file = open(TRAIN_FILE, "a")
-    try:
-        writer = unicodecsv.writer(csv_file)
-        writer.writerow((id, particle_score, quantity_score, person_name_score, domain_score,noun_score, tf_idf_score, max_tf_idf_score, min_tf_idf_score, number_score, bracket_score, position_score, title_score, is_lead_score, is_tf_score, is_tf_idf_score, label_score))
-    finally:
-        csv_file.close()
+    #csv_file = open(TRAIN_FILE, "a")
+    #try:
+    #   writer = unicodecsv.writer(csv_file)
+    #  writer.writerow((id, particle_score, quantity_score, person_name_score, domain_score,noun_score, tf_idf_score, max_tf_idf_score, min_tf_idf_score, number_score, bracket_score, position_score, title_score, is_lead_score, is_tf_score, is_tf_idf_score, label_score))
+    #finally:
+    #    csv_file.close()
 def create_train_data():
     # デフォルトの文字エンコーディング設定
     reload(sys)

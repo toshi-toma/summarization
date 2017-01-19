@@ -45,7 +45,6 @@ def get_noun_score(sentence_words_noun):
         for noun in sentence:
             if noun in important_noun: score += 1
         sentence_score.append(score)
-    print sentence_score
     with warnings.catch_warnings():
         scaler = MinMaxScaler()
         warnings.simplefilter("ignore")
