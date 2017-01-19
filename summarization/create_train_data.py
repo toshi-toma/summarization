@@ -12,17 +12,15 @@ import tf_idf
 NEWS_FILE = '../data/news_data.csv'
 #訓練データ用CSVファイル
 TRAIN_FILE = '../data/train_data.csv'
-
-
-def write_csv(id, tf_idf_score, max_tf_idf_score, min_tf_idf_score, number_score, bracket_score,
-              position_score, title_score, is_lead_score, is_tf_score, is_tf_idf_score, label_score):
-    print id, tf_idf_score, max_tf_idf_score, min_tf_idf_score, number_score, bracket_score, position_score, title_score, is_lead_score, is_tf_score, is_tf_idf_score, label_score
+def write_csv(id, particle_score, quantity_score, person_name_score, domain_score,noun_score, tf_idf_score,
+              max_tf_idf_score, min_tf_idf_score, number_score, bracket_score,
+                      position_score, title_score, is_lead_score, is_tf_score, is_tf_idf_score, label_score):
+    print id, particle_score, quantity_score, person_name_score, domain_score,noun_score, tf_idf_score, max_tf_idf_score, min_tf_idf_score, number_score, bracket_score, position_score, title_score, is_lead_score, is_tf_score, is_tf_idf_score, label_score
     # CSVファイルにニュースID、日時、本文格納
     csv_file = open(TRAIN_FILE, "a")
     try:
         writer = unicodecsv.writer(csv_file)
-        writer.writerow((id, tf_idf_score, max_tf_idf_score, min_tf_idf_score, number_score, bracket_score,
-                         position_score, title_score, is_lead_score, is_tf_score, is_tf_idf_score, label_score))
+        writer.writerow((id, particle_score, quantity_score, person_name_score, domain_score,noun_score, tf_idf_score, max_tf_idf_score, min_tf_idf_score, number_score, bracket_score, position_score, title_score, is_lead_score, is_tf_score, is_tf_idf_score, label_score))
     finally:
         csv_file.close()
 def create_train_data():
@@ -43,24 +41,34 @@ def create_train_data():
 
         """形態素解析&データの用意"""
         # jumanで形態素解析
+        jumanpp = commands.getoutput("echo " + title + "。" + " | ~/juman/bin/jumanpp")
+        title_words = summarization.get_noun_verb_adjective(jumanpp)
+        title_domain = summarization.get_title_domain(jumanpp)
+
+        # jumanで形態素解析
         #名詞・動詞・形容詞
         sentence_words = []
         #名詞
         sentence_words_noun = []
         #単語数
         words_list = []
+        #特徴量格納用
+        feature_list = []
         for sentence in article_news:
             jumanpp = commands.getoutput("echo " + sentence + "。" + " | ~/juman/bin/jumanpp")
             # 単語取得
             noun_verb_adjective = summarization.get_noun_verb_adjective(jumanpp)
             noun = summarization.get_noun(jumanpp)
             words = summarization.get_words(jumanpp)
+            features = summarization.get_features(jumanpp,title_domain)
             if len(noun_verb_adjective) == 0: sentence_words.append([u""])
             else: sentence_words.append(noun_verb_adjective)
             if len(noun) == 0: sentence_words_noun.append([u""])
             else: sentence_words_noun.append(noun)
             if len(words) == 0: words_list.append([0])
             else: words_list.append(words)
+            if len(features) == 0: feature_list.append([0,0,0,0])
+            else: feature_list.append(features)
         # jumanで形態素解析
         summary_words = []
         for sentence in summary_news:
@@ -68,19 +76,17 @@ def create_train_data():
             # 単語取得
             summary_words.extend(summarization.get_noun_verb_adjective(jumanpp))
 
-        # jumanで形態素解析
-        jumanpp = commands.getoutput("echo " + title + "。" + " | ~/juman/bin/jumanpp")
-        title_words = summarization.get_noun_verb_adjective(jumanpp)
-
-        if len(sentence_words) == len(sentence_words_noun) == len(article_news) == len(words_list):
+        if len(sentence_words) == len(sentence_words_noun) == len(article_news) == len(words_list) == len(feature_list):
             pass
         else:
             print "バグ発見:" + "article_newsの数:" + str(len(article_news)) + ", sentence_wordsの数:" \
                   + str(len(sentence_words)) + ", word_listの数:" + str(len(words_list)) \
-                  + ",sentence_words_nounの数" + str(len(sentence_words_noun))
+                  + ",sentence_words_nounの数" + str(len(sentence_words_noun)) + ",feature_listの数" + str(len(feature_list))
             break
 
         """特長量の計算"""
+        #重要単語の存在数格納
+        noun_score_list = feature.get_noun_score(sentence_words_noun)
         #TF-IDF格納
         tf_idf_list = tf_idf.get_tf_idf_score(sentence_words_noun)
         tf_idf_list = feature.scale_tf_idf(tf_idf_list)
@@ -97,6 +103,17 @@ def create_train_data():
         #ラベル格納
         label = feature.get_is_summary(sentence_words, summary_words)
         for p, article in enumerate(article_news):
+            some_feature = feature_list[p]
+            #先頭語が助詞(0 or 1)
+            particle_score = some_feature[0]
+            #数詞があるか(0 or 1)
+            quantity_score = some_feature[1]
+            #人名があるか(0 or 1)
+            person_name_score = some_feature[2]
+            #ドメインの一致(0 or 1)
+            domain_score = some_feature[3]
+            #重要単語の存在数
+            noun_score = noun_score_list[p]
             #tf-idf値(0 to 1)
             tf_idf_score = feature.get_tf_idf(tf_idf_list[p])
             #最大tf-idf値(0 to 1)
@@ -119,7 +136,7 @@ def create_train_data():
             is_tf_idf_score = tf_idf_summary_list[p]
             #label=重要文(0 or 1)
             label_score = label[p]
-            write_csv(row_data[0], tf_idf_score, max_tf_idf_score, min_tf_idf_score, number_score, bracket_score,
+            write_csv(row_data[0], particle_score, quantity_score, person_name_score, domain_score,noun_score, tf_idf_score, max_tf_idf_score, min_tf_idf_score, number_score, bracket_score,
                       position_score, title_score, is_lead_score, is_tf_score, is_tf_idf_score, label_score)
 
 if __name__ == '__main__':

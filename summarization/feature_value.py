@@ -3,6 +3,7 @@ import tf_idf
 import noun
 from sklearn.preprocessing import MinMaxScaler
 import warnings
+from collections import defaultdict
 """
 特徴量
 new
@@ -27,25 +28,29 @@ new
 tf_idf_score, max_tf_idf_score, min_tf_idf_score, number_score, bracket_score,
                       position_score, title_score, is_lead_score, is_tf_score, is_tf_idf_score, label_score
 """
-#先頭語が助詞(0 or 1)
-def get_is_particle():
-    return 0
-
-#数詞があるか(0 or 1)
-def get_is_quantity():
-    return 0
-
-#人名があるか(0 or 1)
-def get_is_person_name():
-    return 0
-
-#ドメインの一致(0 or 1)
-def get_is_domain():
-    return 0
-
 #重要単語の存在数(0 to 1)
-def get_noun_score():
-    return 0
+def get_noun_score(sentence_words_noun):
+    result_list = []
+    important_noun = []
+    sentence_score = []
+    noun_dic = defaultdict(lambda: 0)
+    for sentence in sentence_words_noun:
+        for noun in sentence:
+            noun_dic[noun] += 1
+    for ke, va in noun_dic.items():
+        if va > 1:
+            important_noun.append(ke)
+    for sentence in sentence_words_noun:
+        score = 0
+        for noun in sentence:
+            if noun in important_noun: score += 1
+        sentence_score.append(score)
+    print sentence_score
+    with warnings.catch_warnings():
+        scaler = MinMaxScaler()
+        warnings.simplefilter("ignore")
+        result_list = scaler.fit_transform(sentence_score)
+    return result_list
 
 
 #tf-idf値のスケーリング
