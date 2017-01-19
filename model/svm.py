@@ -11,9 +11,9 @@ TRAIN_FILE = '../data/train_data.csv'
 TRAIN_FILE2 = '../data/train_data_v2.csv'
 
 def svm():
-    data = np.loadtxt(TRAIN_FILE, delimiter=",",skiprows=1, usecols=(1,2,3,4,5,6,7,8,9,10,11))
-    x = data[:, 0:10]
-    y = data[:, 10]
+    data = np.loadtxt(TRAIN_FILE2, delimiter=",",skiprows=1, usecols=(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16))
+    x = data[:, 0:15]
+    y = data[:, 15]
     X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.3)
     clf = SVC(C=100., gamma=0.1)
     clf.fit(X_train, y_train)
