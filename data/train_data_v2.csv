@@ -1,0 +1,1 @@
+id, particle_score, quantity_score, person_name_score, domain_score,noun_score, tf_idf_score,max_tf_idf_score, min_tf_idf_score, number_score, bracket_score,position_score, title_score, is_lead_score, is_tf_score, is_tf_idf_score, label_score
