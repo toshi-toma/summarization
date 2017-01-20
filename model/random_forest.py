@@ -24,32 +24,34 @@ def random_forest():
         'min_samples_split': [3, 5, 10, 15, 20, 25, 30, 40, 50, 100],
         'max_depth': [3, 5, 10, 15, 20, 25, 30, 40, 50, 100]
     }
-    score = 'f1'
-    clf = GridSearchCV(
-        RandomForestClassifier(),  # 識別器
-        params,  # 最適化したいパラメータセット
-        cv=5,  # 交差検定の回数
-        scoring='%s_weighted' % score)  # モデルの評価関数の指定
-    clf.fit(X_train, y_train)
-    print clf.grid_scores_
-    print clf.best_params_
-    print("# Tuning hyper-parameters for %s" % score)
-    print()
-    print("Best parameters set found on development set: %s" % clf.best_params_)
-    print()
+    scores = ['precision', 'recall', 'f1']
+    for score in scores:
+        print "--------" + score + "--------"
+        clf = GridSearchCV(
+            RandomForestClassifier(),  # 識別器
+            params,  # 最適化したいパラメータセット
+            cv=5,  # 交差検定の回数
+            scoring='%s_weighted' % score)  # モデルの評価関数の指定
+        clf.fit(X_train, y_train)
+        print clf.grid_scores_
+        print clf.best_params_
+        print("# Tuning hyper-parameters for %s" % score)
+        print()
+        print("Best parameters set found on development set: %s" % clf.best_params_)
+        print()
 
-    # それぞれのパラメータでの試行結果の表示
-    print("Grid scores on development set:")
-    print()
-    for params, mean_score, scores in clf.grid_scores_:
-        print("%0.3f (+/-%0.03f) for %r"
-              % (mean_score, scores.std() * 2, params))
-    print()
+        # それぞれのパラメータでの試行結果の表示
+        print("Grid scores on development set:")
+        print()
+        for params, mean_score, scores in clf.grid_scores_:
+            print("%0.3f (+/-%0.03f) for %r"
+                  % (mean_score, scores.std() * 2, params))
+        print()
 
-    # テストデータセットでの分類精度を表示
-    print("The scores are computed on the full evaluation set.")
-    print()
-    y_true, y_pred = y_test, clf.predict(X_test)
-    print(classification_report(y_true, y_pred))
+        # テストデータセットでの分類精度を表示
+        print("The scores are computed on the full evaluation set.")
+        print()
+        y_true, y_pred = y_test, clf.predict(X_test)
+        print(classification_report(y_true, y_pred))
 if __name__ == '__main__':
     random_forest()
