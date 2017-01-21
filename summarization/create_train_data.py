@@ -11,7 +11,7 @@ import tf_idf
 #ニュースデータ格納用CSVファイル
 NEWS_FILE = '../data/big_news_data.csv'
 #訓練データ用CSVファイル
-TRAIN_FILE = '../data/train_data_v2.csv'
+TRAIN_FILE = '../data/big_train_data.csv'
 def write_csv(id, particle_score, quantity_score, person_name_score, domain_score,noun_score, tf_idf_score,
               max_tf_idf_score, min_tf_idf_score, number_score, bracket_score,
                       position_score, title_score, is_lead_score, is_tf_score, is_tf_idf_score, label_score):
@@ -19,8 +19,8 @@ def write_csv(id, particle_score, quantity_score, person_name_score, domain_scor
     # CSVファイルにニュースID、日時、本文格納
     csv_file = open(TRAIN_FILE, "a")
     try:
-       	writer = unicodecsv.writer(csv_file)
-      	writer.writerow((id, particle_score, quantity_score, person_name_score, domain_score,noun_score, tf_idf_score, max_tf_idf_score, min_tf_idf_score, number_score, bracket_score, position_score, title_score, is_lead_score, is_tf_score, is_tf_idf_score, label_score))
+        writer = unicodecsv.writer(csv_file)
+        writer.writerow((id, particle_score, quantity_score, person_name_score, domain_score,noun_score, tf_idf_score, max_tf_idf_score, min_tf_idf_score, number_score, bracket_score, position_score, title_score, is_lead_score, is_tf_score, is_tf_idf_score, label_score))
     finally:
         csv_file.close()
 def create_train_data():
@@ -29,7 +29,7 @@ def create_train_data():
     sys.setdefaultencoding('utf-8')
     csv_reader = unicodecsv.reader(open(NEWS_FILE))
     for n, row_data in enumerate(csv_reader):
-	# header
+        # header
         if n == 0: continue
         #ニュース本文
         article_news = csv.edit_news(row_data[3])
@@ -54,7 +54,7 @@ def create_train_data():
         words_list = []
         #特徴量格納用
         feature_list = []
-	index_flug = False
+        index_flag = False
         for sentence in article_news:
             jumanpp = commands.getoutput("echo " + sentence + "。" + " | ~/juman/bin/jumanpp")
             # 単語取得
@@ -62,10 +62,10 @@ def create_train_data():
             noun = summarization.get_noun(jumanpp)
             words = summarization.get_words(jumanpp)
             features = summarization.get_features(jumanpp,title_domain)
-	    if noun_verb_adjective == 0 or noun == 0 or words == 0: 
-	    	index_flug = True
-		continue
-	    if len(noun_verb_adjective) == 0: sentence_words.append([u""])
+            if noun_verb_adjective == 0 or noun == 0 or words == 0:
+                index_flag = True
+                break
+            if len(noun_verb_adjective) == 0: sentence_words.append([u""])
             else: sentence_words.append(noun_verb_adjective)
             if len(noun) == 0: sentence_words_noun.append([u""])
             else: sentence_words_noun.append(noun)
@@ -73,8 +73,8 @@ def create_train_data():
             else: words_list.append(words)
             if len(features) == 0: feature_list.append([0,0,0,0])
             else: feature_list.append(features)
-	if index_flug == True:
-	    continue
+        if index_flag == True:
+            continue
         # jumanで形態素解析
         print row_data[0]
         summary_words = []
