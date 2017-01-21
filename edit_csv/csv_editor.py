@@ -2,9 +2,9 @@
 import unicodecsv
 
 #ニュースデータ格納用CSVファイル
-FILE_NAME = '../data/news_data.csv'
+FILE_NAME = '../data/big_news_data.csv'
 #全ニュースデータ格納用CSVファイル
-FILE_NAME2 = '../data/article_news.csv'
+FILE_NAME2 = '../data/big_article_news.csv'
 
 #index行のニュース本文を返す
 def read_csv(index):
@@ -122,6 +122,7 @@ def remove_not_covered_news():
         article = edit_news(row[3])
         if len(article) <= 3: continue
         writer.writerow((row))
+
 
 #要約またはニュース本文が存在しないデータを削除して、news_data.csvに書き込む
 if __name__ == '__main__':
