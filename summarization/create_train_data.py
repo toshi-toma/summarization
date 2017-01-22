@@ -76,7 +76,6 @@ def create_train_data():
         if index_flag == True:
             continue
         # jumanで形態素解析
-        print row_data[0]
         summary_words = []
         for sentence in summary_news:
             jumanpp = commands.getoutput("echo " + sentence + "。" + " | ~/juman/bin/jumanpp")
