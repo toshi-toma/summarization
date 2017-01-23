@@ -31,7 +31,7 @@ def random_forest():
             X_test = Xp[test]
             y_train = Yp[train]
             y_test = Yp[test]
-            clf = RandomForestClassifier()
+            clf = RandomForestClassifier(max_features=3, min_samples_split=20, n_jobs=-1, n_estimators=300, max_depth=100)
             clf.fit(X_train, y_train)
             pred = clf.predict(X_test)
             table = pd.crosstab(y_test, pred)
