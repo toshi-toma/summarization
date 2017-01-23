@@ -33,7 +33,7 @@ def svm():
             X_test = Xp[test]
             y_train = Yp[train]
             y_test = Yp[test]
-            clf = SVC()
+            clf = SVC(kernel='rbf', C=1000, gamma=0.001)
             clf.fit(X_train, y_train)
             pred = clf.predict(X_test)
             table = pd.crosstab(y_test, pred)
