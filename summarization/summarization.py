@@ -1,5 +1,5 @@
 # coding: UTF-8
-
+import sys
 def get_domain(domain):
     data = domain[1:-1]
     sp = data.split(" ")
@@ -73,6 +73,7 @@ def get_words(text):
                 items.append(noun[0])
             except IndexError:
                 print "IndexError"
+                return 0
     return items
 #名詞のリストを返す
 def get_noun(text):
@@ -90,6 +91,7 @@ def get_noun(text):
                     items.append(noun[0])
             except IndexError:
                 print "IndexError"
+                return 0
     return items
 
 #名詞と動詞と形容詞のリストを返す
@@ -108,6 +110,7 @@ def get_noun_verb_adjective(text):
                     items.append(noun[0])
             except IndexError:
                 print "IndexError"
+                return 0
     return items
 
 if __name__ == '__main__':
